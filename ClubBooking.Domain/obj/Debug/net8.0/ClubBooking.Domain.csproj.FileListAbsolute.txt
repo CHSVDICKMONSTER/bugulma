@@ -1,0 +1,11 @@
+D:\Diplo\ClubBooking\ClubBooking.Domain\bin\Debug\net8.0\ClubBooking.Domain.deps.json
+D:\Diplo\ClubBooking\ClubBooking.Domain\bin\Debug\net8.0\ClubBooking.Domain.dll
+D:\Diplo\ClubBooking\ClubBooking.Domain\bin\Debug\net8.0\ClubBooking.Domain.pdb
+D:\Diplo\ClubBooking\ClubBooking.Domain\obj\Debug\net8.0\ClubBooking.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Diplo\ClubBooking\ClubBooking.Domain\obj\Debug\net8.0\ClubBooking.Domain.AssemblyInfoInputs.cache
+D:\Diplo\ClubBooking\ClubBooking.Domain\obj\Debug\net8.0\ClubBooking.Domain.AssemblyInfo.cs
+D:\Diplo\ClubBooking\ClubBooking.Domain\obj\Debug\net8.0\ClubBooking.Domain.csproj.CoreCompileInputs.cache
+D:\Diplo\ClubBooking\ClubBooking.Domain\obj\Debug\net8.0\ClubBooking.Domain.dll
+D:\Diplo\ClubBooking\ClubBooking.Domain\obj\Debug\net8.0\refint\ClubBooking.Domain.dll
+D:\Diplo\ClubBooking\ClubBooking.Domain\obj\Debug\net8.0\ClubBooking.Domain.pdb
+D:\Diplo\ClubBooking\ClubBooking.Domain\obj\Debug\net8.0\ref\ClubBooking.Domain.dll

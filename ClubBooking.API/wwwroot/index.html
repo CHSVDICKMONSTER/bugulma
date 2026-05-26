@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClubBooking - Бронирование ПК клубов</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; padding: 20px; transition: background 0.3s; }
+        body.dark { background: #1a1a1a; color: #eee; }
+        .app { max-width: 1200px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #ddd; }
+        .theme-btn { background: white; border: 1px solid #ccc; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-size: 1rem; }
+        .card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        body.dark .card { background: #2d2d2d; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select, input, button { width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #ccc; background: white; font-size: 1rem; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #0056b3; }
+        .seats-grid { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .seat { background: #28a745; color: white; padding: 15px; text-align: center; border-radius: 16px; width: 100px; cursor: pointer; transition: transform 0.2s; font-weight: bold; }
+        .seat:hover { transform: scale(1.05); }
+        .seat.busy { background: #dc3545; }
+        .seat.booked { background: #ffc107; color: black; }
+        .booking-list, .user-list { list-style: none; padding: 0; }
+        .booking-list li, .user-list li { background: #f9f9f9; margin: 8px 0; padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+        body.dark .booking-list li, body.dark .user-list li { background: #3a3a3a; }
+        .delete-btn { background: #dc3545; color: white; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; width: auto; }
+        .booking-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+        .booking-modal-content { background: white; border-radius: 28px; width: 90%; max-width: 450px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        body.dark .booking-modal-content { background: #2d2d2d; }
+        .booking-modal-header { background: #007bff; color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .booking-modal-close { background: none; border: none; font-size: 28px; color: white; cursor: pointer; width: auto; }
+        .booking-modal-body { padding: 20px; }
+        .booking-datetime { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ccc; font-size: 1rem; }
+        .booking-error { color: #dc3545; margin-top: 10px; font-size: 0.9rem; }
+        .booking-modal-footer { padding: 16px 20px; display: flex; gap: 10px; justify-content: flex-end; }
+        .booking-btn { padding: 8px 20px; border-radius: 30px; border: none; cursor: pointer; font-weight: bold; width: auto; }
+        .booking-btn-primary { background: #007bff; color: white; }
+        .booking-btn-secondary { background: #6c757d; color: white; }
+        .nav-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .admin-select { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header>
+        <h1>🎮 ClubBooking</h1>
+        <button id="themeToggle" class="theme-btn">🌙 Тёмная тема</button>
+    </header>
+    <main id="mainContent"></main>
+</div>
+
+<script>
+    // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+    let authToken = localStorage.getItem('token');
+    let currentUser = null;
+
+    function setAuthToken(token) {
+        authToken = token;
+        if (token) localStorage.setItem('token', token);
+        else localStorage.removeItem('token');
+    }
+
+    async function apiRequest(endpoint, method = 'GET', body = null) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+        const response = await fetch(`/api${endpoint}`, {
+            method,
+            headers,
+            body: body ? JSON.stringify(body) : null
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({ error: 'Ошибка сервера' }));
+            throw new Error(err.error || 'Request failed');
+        }
+        if (response.status === 204) return null;
+        return response.json();
+    }
+
+    // ==================== АУТЕНТИФИКАЦИЯ ====================
+    async function register(nickname, email, password, secretCode) {
+        const data = await apiRequest('/auth/register', 'POST', { nickname, email, password, secretCode });
+        setAuthToken(data.token);
+        currentUser = { nickname: data.nickname, role: data.role };
+        showDashboard();
+    }
+
+    async function login(login, password) {
+        const data = await apiRequest('/auth/login', 'POST', { login, password });
+        setAuthToken(data.token);
+        currentUser = { nickname: data.nickname, role: data.role };
+        showDashboard();
+    }
+
+    function logout() {
+        setAuthToken(null);
+        currentUser = null;
+        showAuthForm();
+    }
+
+    function showAuthForm() {
+        const main = document.getElementById('mainContent');
+        main.innerHTML = `
+            <div class="card">
+                <h2>Вход / Регистрация</h2>
+                <div class="nav-buttons">
+                    <button id="showLoginBtn">Вход</button>
+                    <button id="showRegisterBtn">Регистрация</button>
+                </div>
+                <div id="authFormContainer"></div>
+            </div>
+        `;
+        const container = document.getElementById('authFormContainer');
+        const renderLogin = () => {
+            container.innerHTML = `
+                <div class="form-group"><label>Логин (email или ник)</label><input id="loginLogin" type="text"></div>
+                <div class="form-group"><label>Пароль</label><input id="loginPassword" type="password"></div>
+                <button id="submitLogin">Войти</button>
+            `;
+            document.getElementById('submitLogin').onclick = () => {
+                const loginVal = document.getElementById('loginLogin').value;
+                const pass = document.getElementById('loginPassword').value;
+                login(loginVal, pass).catch(alert);
+            };
+        };
+        const renderRegister = () => {
+            container.innerHTML = `
+                <div class="form-group"><label>Никнейм</label><input id="regNickname" type="text"></div>
+                <div class="form-group"><label>Email</label><input id="regEmail" type="email"></div>
+                <div class="form-group"><label>Пароль</label><input id="regPassword" type="password"></div>
+                <div class="form-group"><label>Секретный код (для роли админа)</label><input id="regSecretCode" type="password" placeholder="оставьте пустым"></div>
+                <button id="submitRegister">Зарегистрироваться</button>
+            `;
+            document.getElementById('submitRegister').onclick = () => {
+                const nickname = document.getElementById('regNickname').value;
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+                const secretCode = document.getElementById('regSecretCode').value;
+                register(nickname, email, password, secretCode).catch(alert);
+            };
+        };
+        document.getElementById('showLoginBtn').onclick = renderLogin;
+        document.getElementById('showRegisterBtn').onclick = renderRegister;
+        renderLogin();
+    }
+
+    // ==================== БРОНИРОВАНИЕ (МОДАЛЬНОЕ ОКНО) ====================
+    async function showBookingModal(seatId) {
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'booking-modal';
+        modalDiv.innerHTML = `
+            <div class="booking-modal-content">
+                <div class="booking-modal-header">
+                    <h3>📅 Бронирование места</h3>
+                    <button class="booking-modal-close">&times;</button>
+                </div>
+                <div class="booking-modal-body">
+                    <div class="form-group">
+                        <label>📆 Начало</label>
+                        <input type="datetime-local" id="bookingStart" class="booking-datetime" step="60">
+                    </div>
+                    <div class="form-group">
+                        <label>⏳ Конец</label>
+                        <input type="datetime-local" id="bookingEnd" class="booking-datetime" step="60">
+                    </div>
+                    <div id="bookingError" class="booking-error"></div>
+                </div>
+                <div class="booking-modal-footer">
+                    <button id="confirmBooking" class="booking-btn booking-btn-primary">✅ Подтвердить</button>
+                    <button id="cancelBooking" class="booking-btn booking-btn-secondary">❌ Отмена</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+        const startInput = modalDiv.querySelector('#bookingStart');
+        const endInput = modalDiv.querySelector('#bookingEnd');
+        const errorDiv = modalDiv.querySelector('#bookingError');
+        const confirmBtn = modalDiv.querySelector('#confirmBooking');
+        const cancelBtn = modalDiv.querySelector('#cancelBooking');
+        const closeBtn = modalDiv.querySelector('.booking-modal-close');
+        const now = new Date();
+        now.setHours(now.getHours() + 1);
+        const min = now.toISOString().slice(0, 16);
+        startInput.min = min;
+        endInput.min = min;
+        startInput.addEventListener('change', () => {
+            if (startInput.value) {
+                const startDate = new Date(startInput.value);
+                const endDate = new Date(startDate.getTime() + 2*60*60*1000);
+                endInput.value = endDate.toISOString().slice(0, 16);
+            }
+        });
+        const close = () => modalDiv.remove();
+        confirmBtn.onclick = async () => {
+            const start = startInput.value, end = endInput.value;
+            if (!start || !end) { errorDiv.textContent = '❌ Заполните оба поля'; return; }
+            const startTime = new Date(start), endTime = new Date(end);
+            if (startTime <= new Date()) { errorDiv.textContent = '❌ Начало должно быть в будущем'; return; }
+            if (endTime <= startTime) { errorDiv.textContent = '❌ Конец должен быть позже начала'; return; }
+            if ((endTime - startTime) > 4*60*60*1000) { errorDiv.textContent = '❌ Максимум 4 часа'; return; }
+            errorDiv.textContent = '';
+            confirmBtn.disabled = true; confirmBtn.textContent = '⏳ Обработка...';
+            try {
+                await apiRequest('/bookings', 'POST', { seatId, startTime: startTime.toISOString(), endTime: endTime.toISOString() });
+                alert('✅ Бронь создана!');
+                close();
+                const clubSelect = document.getElementById('clubSelect');
+                if (clubSelect && clubSelect.value) {
+                    const seats = await apiRequest(`/seats/club/${clubSelect.value}`);
+                    renderSeats(seats);
+                    loadMyBookings();
+                }
+            } catch (err) { errorDiv.textContent = '❌ ' + err.message; confirmBtn.disabled = false; confirmBtn.textContent = '✅ Подтвердить'; }
+        };
+        cancelBtn.onclick = close;
+        closeBtn.onclick = close;
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalDiv.parentNode) close(); }, { once: true });
+    }
+
+    // ==================== ОТОБРАЖЕНИЕ МЕСТ ====================
+async function renderSeats(seats) {
+    const container = document.getElementById('seatsContainer');
+    if (!container) return;
+    if (!seats.length) {
+        container.innerHTML = '<p>Нет мест в этом клубе</p>';
+        return;
+    }
+    let html = '<div class="seats-grid">';
+    seats.forEach(seat => {
+        let statusClass = '';
+        let statusText = '';
+        // Функция для форматирования времени без секунд
+        const formatTime = (isoString) => {
+            if (!isoString) return '';
+            const date = new Date(isoString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        };
+        switch (seat.status) {
+            case 'Free':
+                statusClass = 'free';
+                statusText = 'Свободно';
+                break;
+            case 'BusyNow':
+                statusClass = 'busy';
+                const freeTime = formatTime(seat.availableFrom);
+                statusText = `Занято до ${freeTime}`;
+                break;
+            case 'BookedFuture':
+                statusClass = 'booked';
+                const startTime = formatTime(seat.availableFrom);
+                statusText = `Занято с ${startTime}`;
+                break;
+            default:
+                statusClass = 'free';
+                statusText = 'Свободно';
+        }
+        html += `<div class="seat ${statusClass}" data-seat-id="${seat.id}">
+                    Место ${seat.seatNumber}<br>${statusText}
+                 </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+    // Обработчик только для свободных мест
+    document.querySelectorAll('.seat.free').forEach(el => {
+        el.addEventListener('click', () => showBookingModal(el.dataset.seatId));
+    });
+}
+
+    async function loadMyBookings() {
+        const container = document.getElementById('myBookingsList');
+        if (!container) return;
+        try {
+            const bookings = await apiRequest('/bookings/my');
+            if (!bookings.length) { container.innerHTML = '<p>Нет броней</p>'; return; }
+            let html = '<ul class="booking-list">';
+            bookings.forEach(b => {
+                html += `<li><span>Клуб: ${b.clubAddress}, Место ${b.seatNumber}, ${new Date(b.startTime).toLocaleString()} - ${new Date(b.endTime).toLocaleString()}</span>
+                         <button class="delete-btn" data-booking-id="${b.id}">Отменить</button></li>`;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const id = btn.dataset.bookingId;
+                    await apiRequest(`/bookings/${id}`, 'DELETE');
+                    await loadMyBookings();
+                    const clubSelect = document.getElementById('clubSelect');
+                    if (clubSelect && clubSelect.value) {
+                        const seats = await apiRequest(`/seats/club/${clubSelect.value}`);
+                        renderSeats(seats);
+                    }
+                });
+            });
+        } catch (err) { console.error(err); }
+    }
+
+    // ==================== АДМИН-ФУНКЦИИ ====================
+    async function loadAdminBookings(clubId) {
+        const container = document.getElementById('adminBookingsList');
+        if (!container) return;
+        try {
+            const bookings = await apiRequest(`/bookings/club/${clubId}`);
+            if (!bookings.length) { container.innerHTML = '<p>Нет броней в этом клубе</p>'; return; }
+            let html = '<ul class="booking-list">';
+            bookings.forEach(b => {
+                html += `<li><span>Клиент: ${b.userNickname}, Место ${b.seatNumber}, ${new Date(b.startTime).toLocaleString()} - ${new Date(b.endTime).toLocaleString()}</span>
+                         <button class="delete-btn" data-booking-id="${b.id}">Удалить</button></li>`;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const id = btn.dataset.bookingId;
+                    await apiRequest(`/bookings/${id}`, 'DELETE');
+                    await loadAdminBookings(clubId);
+                });
+            });
+        } catch (err) { alert('Ошибка загрузки броней: ' + err.message); }
+    }
+
+    async function loadClientsList() {
+        const container = document.getElementById('clientsList');
+        if (!container) return;
+        try {
+            const clients = await apiRequest('/users/clients');
+            if (!clients.length) { container.innerHTML = '<p>Нет клиентов</p>'; return; }
+            let html = '<ul class="user-list">';
+            clients.forEach(c => {
+                html += `<li><span>${c.nickname} (${c.email})</span><button class="delete-btn" data-user-id="${c.id}">Удалить</button></li>`;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const userId = btn.dataset.userId;
+                    await apiRequest(`/users/${userId}`, 'DELETE');
+                    await loadClientsList();
+                });
+            });
+        } catch (err) { alert('Ошибка загрузки клиентов: ' + err.message); }
+    }
+
+    // ==================== ОТОБРАЖЕНИЕ ДАШБОРДА ПО РОЛИ ====================
+    async function showDashboard() {
+        const main = document.getElementById('mainContent');
+        const role = currentUser.role;
+        const clubs = await apiRequest('/clubs');
+        let html = `<div class="card"><h2>Добро пожаловать, ${currentUser.nickname} (${role})</h2><button id="logoutBtn">Выйти</button></div>`;
+        if (role === 'Client') {
+            html += `<div class="card"><h3>Выберите клуб</h3><select id="clubSelect">${clubs.map(c => `<option value="${c.id}">${c.address}</option>`).join('')}</select><div id="seatsContainer"></div></div>
+                     <div class="card"><h3>Мои брони</h3><div id="myBookingsList"></div></div>`;
+        } else if (role === 'Admin') {
+            html += `<div class="card">
+                        <h3>Управление бронями</h3>
+                        <div class="admin-select"><label>Клуб:</label><select id="adminClubSelect">${clubs.map(c => `<option value="${c.id}">${c.address}</option>`).join('')}</select></div>
+                        <button id="showBookingsBtn">Показать все брони клуба</button>
+                        <div id="adminBookingsList"></div>
+                     </div>
+                     <div class="card">
+                        <h3>Клиенты</h3>
+                        <button id="loadClientsBtn">Загрузить клиентов</button>
+                        <div id="clientsList"></div>
+                     </div>`;
+        } else if (role === 'SuperAdmin') {
+    html += `
+        <div class="card">
+            <h3>Управление бронями (SuperAdmin)</h3>
+            <div class="admin-select"><label>Клуб:</label><select id="adminClubSelect">${clubs.map(c => `<option value="${c.id}">${c.address}</option>`).join('')}</select></div>
+            <button id="showBookingsBtn">Показать все брони клуба</button>
+            <div id="adminBookingsList"></div>
+        </div>
+        <div class="card">
+            <h3>Клиенты</h3>
+            <button id="loadClientsBtn">Загрузить клиентов</button>
+            <div id="clientsList"></div>
+        </div>
+        <div class="card">
+            <h3>Управление клубами (SuperAdmin)</h3>
+            <button id="manageClubsBtn">Управление клубами</button>
+            <div id="clubsManagement"></div>
+        </div>
+    `;
+}
+        main.innerHTML = html;
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        if (role === 'Client') {
+            const clubSelect = document.getElementById('clubSelect');
+            const loadSeats = async () => {
+                const seats = await apiRequest(`/seats/club/${clubSelect.value}`);
+                renderSeats(seats);
+            };
+            clubSelect.addEventListener('change', loadSeats);
+            await loadSeats();
+            await loadMyBookings();
+        } else if (role === 'Admin') {
+            const adminClubSelect = document.getElementById('adminClubSelect');
+            document.getElementById('showBookingsBtn').onclick = async () => {
+                const clubId = adminClubSelect.value;
+                await loadAdminBookings(clubId);
+            };
+            document.getElementById('loadClientsBtn').onclick = async () => {
+                await loadClientsList();
+            };
+        } else if (role === 'SuperAdmin') {
+    const adminClubSelect = document.getElementById('adminClubSelect');
+    if (adminClubSelect) {
+        document.getElementById('showBookingsBtn').onclick = async () => {
+            const clubId = adminClubSelect.value;
+            await loadAdminBookings(clubId);
+        };
+        document.getElementById('loadClientsBtn').onclick = async () => {
+            await loadClientsList();
+        };
+        document.getElementById('manageClubsBtn').onclick = async () => {
+            const clubsData = await apiRequest('/clubs');
+            const div = document.getElementById('clubsManagement');
+            div.innerHTML = `
+                <h4>Существующие клубы</h4>
+                <ul>${clubsData.map(c => `<li>${c.address} <button onclick="apiRequest('/clubs/${c.id}','DELETE').then(()=>location.reload())">Удалить</button></li>`).join('')}</ul>
+                <h4>Создать новый клуб</h4>
+                <div class="form-group"><label>Адрес</label><input id="newClubAddress" placeholder="Например, ул. Центральная, 5"></div>
+                <div class="form-group"><label>Количество мест (2-6)</label>
+                    <select id="newClubSeats">
+                        <option value="2">2 места</option>
+                        <option value="3">3 места</option>
+                        <option value="4" selected>4 места</option>
+                        <option value="5">5 мест</option>
+                        <option value="6">6 мест</option>
+                    </select>
+                </div>
+                <button id="addClubBtn">Добавить клуб</button>
+            `;
+            document.getElementById('addClubBtn')?.addEventListener('click', async () => {
+                const address = document.getElementById('newClubAddress').value;
+                const seats = parseInt(document.getElementById('newClubSeats').value, 10);
+                if (!address) { alert('Введите адрес'); return; }
+                await apiRequest('/clubs', 'POST', { address, numberOfSeats: seats });
+                location.reload();
+            });
+        };
+    }
+}
+    }
+
+    // ==================== ЗАПУСК ====================
+    (async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const nickname = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+                const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+                if (nickname && role) {
+                    currentUser = { nickname, role };
+                    setAuthToken(token);
+                    await showDashboard();
+                    return;
+                }
+            } catch(e) { localStorage.removeItem('token'); }
+        }
+        showAuthForm();
+    })();
+
+    // Тёмная тема
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) themeToggle.onclick = () => document.body.classList.toggle('dark');
+</script>
+</body>
+</html>

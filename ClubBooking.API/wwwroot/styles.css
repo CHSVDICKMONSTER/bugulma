@@ -1,0 +1,339 @@
+:root {
+    --bg: #f5f5f5;
+    --text: #222;
+    --card-bg: #fff;
+    --border: #ddd;
+    --primary: #007bff;
+    --primary-hover: #0056b3;
+    --danger: #dc3545;
+    --success: #28a745;
+    --warning: #ffc107;
+    --seat-free: #28a745;
+    --seat-busy: #dc3545;
+    --seat-booked: #ffc107;
+}
+
+body.dark {
+    --bg: #1a1a1a;
+    --text: #eee;
+    --card-bg: #2d2d2d;
+    --border: #444;
+    --primary: #0d6efd;
+    --primary-hover: #0b5ed7;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.2s;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 20px;
+}
+
+.app {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+.theme-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 20px;
+    color: var(--text);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid var(--border);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: var(--primary-hover);
+}
+
+.seats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.seat {
+    display: inline-block;
+    width: 100px;
+    padding: 15px;
+    margin: 5px;
+    text-align: center;
+    border-radius: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.seat:hover {
+    transform: scale(1.05);
+}
+
+.seat.free {
+    background-color: #28a745 !important; /* зелёный */
+    color: white !important;
+}
+
+.seat.busy {
+    background-color: #dc3545 !important; /* красный */
+    color: white !important;
+}
+
+.seat.booked {
+    background-color: #ffc107 !important; /* жёлтый */
+    color: black !important;
+}
+
+.booking-list, .user-list {
+    list-style: none;
+    padding: 0;
+}
+
+.booking-list li, .user-list li {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-btn {
+    background: var(--danger);
+    width: auto;
+    padding: 5px 10px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.hidden {
+    display: none;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-secondary {
+    background: #6c757d;
+}
+
+/* Модальное окно бронирования */
+.booking-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.booking-modal-content {
+    background: var(--card-bg, #fff);
+    border-radius: 28px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.booking-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: var(--primary, #007bff);
+    color: white;
+}
+
+.booking-modal-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+.booking-modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.1s;
+    width: auto;
+    padding: 0 8px;
+}
+
+.booking-modal-close:hover {
+    transform: scale(1.2);
+    background: none;
+}
+
+.booking-modal-body {
+    padding: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text, #222);
+}
+
+.booking-datetime {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border, #ddd);
+    border-radius: 16px;
+    font-size: 1rem;
+    background: var(--bg, #f5f5f5);
+    color: var(--text, #222);
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.booking-datetime:focus {
+    outline: none;
+    border-color: var(--primary, #007bff);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.booking-error {
+    margin-top: 12px;
+    color: #dc3545;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.booking-modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px 24px;
+    justify-content: flex-end;
+}
+
+.booking-btn {
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    width: auto;
+}
+
+.booking-btn-primary {
+    background: var(--primary, #007bff);
+    color: white;
+}
+
+.booking-btn-primary:hover {
+    background: var(--primary-hover, #0056b3);
+    transform: translateY(-1px);
+}
+
+.booking-btn-secondary {
+    background: var(--card-bg, #e9ecef);
+    color: var(--text, #222);
+    border: 1px solid var(--border, #ccc);
+}
+
+.booking-btn-secondary:hover {
+    background: var(--border, #dee2e6);
+}

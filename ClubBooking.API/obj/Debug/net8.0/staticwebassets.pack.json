@@ -1,0 +1,49 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\api.js",
+      "PackagePath": "staticwebassets\\api.js"
+    },
+    {
+      "Id": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\app.js",
+      "PackagePath": "staticwebassets\\app.js"
+    },
+    {
+      "Id": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\auth.js",
+      "PackagePath": "staticwebassets\\auth.js"
+    },
+    {
+      "Id": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\dashboard.js",
+      "PackagePath": "staticwebassets\\dashboard.js"
+    },
+    {
+      "Id": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\styles.css",
+      "PackagePath": "staticwebassets\\styles.css"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ClubBooking.API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ClubBooking.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.ClubBooking.API.props",
+      "PackagePath": "build\\ClubBooking.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.ClubBooking.API.props",
+      "PackagePath": "buildMultiTargeting\\ClubBooking.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.ClubBooking.API.props",
+      "PackagePath": "buildTransitive\\ClubBooking.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

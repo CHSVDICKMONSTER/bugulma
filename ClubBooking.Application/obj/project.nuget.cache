@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "e0bO0HVin18=",
+  "success": true,
+  "projectFilePath": "D:\\Diplo\\ClubBooking\\ClubBooking.Application\\ClubBooking.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Kolob\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
+    "C:\\Users\\Kolob\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\12.1.1\\fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
+    "C:\\Users\\Kolob\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.8\\microsoft.extensions.dependencyinjection.abstractions.10.0.8.nupkg.sha512",
+    "C:\\Users\\Kolob\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.8\\microsoft.extensions.logging.abstractions.10.0.8.nupkg.sha512",
+    "C:\\Users\\Kolob\\.nuget\\packages\\system.diagnostics.diagnosticsource\\10.0.8\\system.diagnostics.diagnosticsource.10.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,640 @@
+{
+  "Version": 1,
+  "Hash": "XOTwSZRZ9nTbQ9ci5a0szEFRGqDw9MpFFn6KfT52xk4=",
+  "Source": "ClubBooking.API",
+  "BasePath": "_content/ClubBooking.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "ClubBooking.API\\wwwroot",
+      "Source": "ClubBooking.API",
+      "ContentRoot": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\",
+      "BasePath": "_content/ClubBooking.API",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\api.js",
+      "SourceId": "ClubBooking.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\",
+      "BasePath": "_content/ClubBooking.API",
+      "RelativePath": "api#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "tq0nrenw3l",
+      "Integrity": "hcYiTh4Iz4ItHhOT21T9IUKK3Tubg3/HQ9MCW+K4ees=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\api.js"
+    },
+    {
+      "Identity": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\app.js",
+      "SourceId": "ClubBooking.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\",
+      "BasePath": "_content/ClubBooking.API",
+      "RelativePath": "app#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "lfww0moht0",
+      "Integrity": "MUQ6TaTo+H8zF/vi292UqsPEM6pkBoUnUO4d9XVws3M=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\app.js"
+    },
+    {
+      "Identity": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\auth.js",
+      "SourceId": "ClubBooking.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\",
+      "BasePath": "_content/ClubBooking.API",
+      "RelativePath": "auth#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "0fww7bpi7l",
+      "Integrity": "5BAcRxIwc6rkDUq1U1y08o3Pxo7JAMKm/fEEBcqP91c=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\auth.js"
+    },
+    {
+      "Identity": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\dashboard.js",
+      "SourceId": "ClubBooking.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\",
+      "BasePath": "_content/ClubBooking.API",
+      "RelativePath": "dashboard#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "xtvjv10clh",
+      "Integrity": "G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\dashboard.js"
+    },
+    {
+      "Identity": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\index.html",
+      "SourceId": "ClubBooking.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\",
+      "BasePath": "_content/ClubBooking.API",
+      "RelativePath": "index#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "acxw6qpulp",
+      "Integrity": "yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\styles.css",
+      "SourceId": "ClubBooking.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\",
+      "BasePath": "_content/ClubBooking.API",
+      "RelativePath": "styles#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "j78lrgsecp",
+      "Integrity": "MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\styles.css"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "api.js",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\api.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "976"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"hcYiTh4Iz4ItHhOT21T9IUKK3Tubg3/HQ9MCW+K4ees=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 12:12:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-hcYiTh4Iz4ItHhOT21T9IUKK3Tubg3/HQ9MCW+K4ees="
+        }
+      ]
+    },
+    {
+      "Route": "api.tq0nrenw3l.js",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\api.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "976"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"hcYiTh4Iz4ItHhOT21T9IUKK3Tubg3/HQ9MCW+K4ees=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 12:12:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "tq0nrenw3l"
+        },
+        {
+          "Name": "label",
+          "Value": "api.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-hcYiTh4Iz4ItHhOT21T9IUKK3Tubg3/HQ9MCW+K4ees="
+        }
+      ]
+    },
+    {
+      "Route": "app.js",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\app.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1242"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MUQ6TaTo+H8zF/vi292UqsPEM6pkBoUnUO4d9XVws3M=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 20:28:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MUQ6TaTo+H8zF/vi292UqsPEM6pkBoUnUO4d9XVws3M="
+        }
+      ]
+    },
+    {
+      "Route": "app.lfww0moht0.js",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\app.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1242"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MUQ6TaTo+H8zF/vi292UqsPEM6pkBoUnUO4d9XVws3M=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 20:28:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lfww0moht0"
+        },
+        {
+          "Name": "label",
+          "Value": "app.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MUQ6TaTo+H8zF/vi292UqsPEM6pkBoUnUO4d9XVws3M="
+        }
+      ]
+    },
+    {
+      "Route": "auth.0fww7bpi7l.js",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\auth.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3422"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5BAcRxIwc6rkDUq1U1y08o3Pxo7JAMKm/fEEBcqP91c=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 12:12:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "0fww7bpi7l"
+        },
+        {
+          "Name": "label",
+          "Value": "auth.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5BAcRxIwc6rkDUq1U1y08o3Pxo7JAMKm/fEEBcqP91c="
+        }
+      ]
+    },
+    {
+      "Route": "auth.js",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\auth.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3422"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5BAcRxIwc6rkDUq1U1y08o3Pxo7JAMKm/fEEBcqP91c=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 12:12:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5BAcRxIwc6rkDUq1U1y08o3Pxo7JAMKm/fEEBcqP91c="
+        }
+      ]
+    },
+    {
+      "Route": "dashboard.js",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\dashboard.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "20184"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 20:28:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4="
+        }
+      ]
+    },
+    {
+      "Route": "dashboard.xtvjv10clh.js",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\dashboard.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "20184"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 20:28:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xtvjv10clh"
+        },
+        {
+          "Name": "label",
+          "Value": "dashboard.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4="
+        }
+      ]
+    },
+    {
+      "Route": "index.acxw6qpulp.html",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "839"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 12:12:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "acxw6qpulp"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "839"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 12:12:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw="
+        }
+      ]
+    },
+    {
+      "Route": "styles.css",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3528"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 12:12:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y="
+        }
+      ]
+    },
+    {
+      "Route": "styles.j78lrgsecp.css",
+      "AssetFile": "D:\\Diplo\\ClubBooking\\ClubBooking.API\\wwwroot\\styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3528"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 May 2026 12:12:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "j78lrgsecp"
+        },
+        {
+          "Name": "label",
+          "Value": "styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y="
+        }
+      ]
+    }
+  ]
+}
