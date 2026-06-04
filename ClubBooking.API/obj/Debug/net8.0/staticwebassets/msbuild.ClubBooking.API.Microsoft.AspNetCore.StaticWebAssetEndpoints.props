@@ -39,38 +39,38 @@
     <StaticWebAssetEndpoint Include="_content/ClubBooking.API/dashboard.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\dashboard.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"20184"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4=\u0022"},{"Name":"Last-Modified","Value":"Mon, 25 May 2026 20:28:33 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-/kKM3KbXG8KSwyQmIJK/DkxsVlRIQGqJGnGMbRiref8="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"25648"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022/kKM3KbXG8KSwyQmIJK/DkxsVlRIQGqJGnGMbRiref8=\u0022"},{"Name":"Last-Modified","Value":"Tue, 26 May 2026 22:34:00 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/ClubBooking.API/dashboard.xtvjv10clh.js">
+    <StaticWebAssetEndpoint Include="_content/ClubBooking.API/dashboard.mnnt4znxf9.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\dashboard.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"xtvjv10clh"},{"Name":"integrity","Value":"sha256-G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4="},{"Name":"label","Value":"_content/ClubBooking.API/dashboard.js"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"20184"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022G7Vo97xyqF3oFQkUcsngKXVjV694lTrlWp7ZMZDnBU4=\u0022"},{"Name":"Last-Modified","Value":"Mon, 25 May 2026 20:28:33 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/ClubBooking.API/index.acxw6qpulp.html">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"acxw6qpulp"},{"Name":"integrity","Value":"sha256-yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw="},{"Name":"label","Value":"_content/ClubBooking.API/index.html"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"839"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw=\u0022"},{"Name":"Last-Modified","Value":"Mon, 25 May 2026 12:12:09 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"mnnt4znxf9"},{"Name":"integrity","Value":"sha256-/kKM3KbXG8KSwyQmIJK/DkxsVlRIQGqJGnGMbRiref8="},{"Name":"label","Value":"_content/ClubBooking.API/dashboard.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"25648"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022/kKM3KbXG8KSwyQmIJK/DkxsVlRIQGqJGnGMbRiref8=\u0022"},{"Name":"Last-Modified","Value":"Tue, 26 May 2026 22:34:00 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/ClubBooking.API/index.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"839"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022yu6yfY0Mj50OuXbaUUWnSjgKe0murPvBG01iPADgkYw=\u0022"},{"Name":"Last-Modified","Value":"Mon, 25 May 2026 12:12:09 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-vj2VvajOo0jBFfZjuPIlcNUGfU/e4cGGDsrMDDwE6fI="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"40961"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022vj2VvajOo0jBFfZjuPIlcNUGfU/e4cGGDsrMDDwE6fI=\u0022"},{"Name":"Last-Modified","Value":"Fri, 29 May 2026 00:01:55 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/ClubBooking.API/index.quzr8npi8x.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"quzr8npi8x"},{"Name":"integrity","Value":"sha256-vj2VvajOo0jBFfZjuPIlcNUGfU/e4cGGDsrMDDwE6fI="},{"Name":"label","Value":"_content/ClubBooking.API/index.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"40961"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022vj2VvajOo0jBFfZjuPIlcNUGfU/e4cGGDsrMDDwE6fI=\u0022"},{"Name":"Last-Modified","Value":"Fri, 29 May 2026 00:01:55 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/ClubBooking.API/styles.3dzg1jwkil.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\styles.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"3dzg1jwkil"},{"Name":"integrity","Value":"sha256-B\u002BREPUEQC4MulFKeJZk\u002BJkS9dQCjmTPC8eTN4JacFRI="},{"Name":"label","Value":"_content/ClubBooking.API/styles.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"8449"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022B\u002BREPUEQC4MulFKeJZk\u002BJkS9dQCjmTPC8eTN4JacFRI=\u0022"},{"Name":"Last-Modified","Value":"Thu, 28 May 2026 00:24:13 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/ClubBooking.API/styles.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\styles.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"3528"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y=\u0022"},{"Name":"Last-Modified","Value":"Mon, 25 May 2026 12:12:09 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/ClubBooking.API/styles.j78lrgsecp.css">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\styles.css'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"j78lrgsecp"},{"Name":"integrity","Value":"sha256-MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y="},{"Name":"label","Value":"_content/ClubBooking.API/styles.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"3528"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022MWiVNqxxSjz78ruI80jQk24mwrF0l4CAqGfil0SlH8Y=\u0022"},{"Name":"Last-Modified","Value":"Mon, 25 May 2026 12:12:09 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-B\u002BREPUEQC4MulFKeJZk\u002BJkS9dQCjmTPC8eTN4JacFRI="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"8449"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022B\u002BREPUEQC4MulFKeJZk\u002BJkS9dQCjmTPC8eTN4JacFRI=\u0022"},{"Name":"Last-Modified","Value":"Thu, 28 May 2026 00:24:13 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
   </ItemGroup>
 </Project>

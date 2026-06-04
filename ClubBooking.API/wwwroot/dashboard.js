@@ -38,7 +38,6 @@ async function renderSeats(seats) {
     seats.forEach(seat => {
         let statusClass = '';
         let statusText = '';
-        // Функция для форматирования времени без секунд
         const formatTime = (isoString) => {
             if (!isoString) return '';
             const date = new Date(isoString);
@@ -51,28 +50,23 @@ async function renderSeats(seats) {
                 break;
             case 'BusyNow':
                 statusClass = 'busy';
-                const freeTime = formatTime(seat.availableFrom);
-                statusText = `Занято до ${freeTime}`;
+                statusText = `Занято до ${formatTime(seat.availableFrom)}`;
                 break;
             case 'BookedFuture':
                 statusClass = 'booked';
-                const startTime = formatTime(seat.availableFrom);
-                statusText = `Занято с ${startTime}`;
+                statusText = `Занято с ${formatTime(seat.availableFrom)}`;
                 break;
             default:
                 statusClass = 'free';
                 statusText = 'Свободно';
         }
-        html += `<div class="seat ${statusClass}" data-seat-id="${seat.id}">
+        // ВСТРОЕННЫЙ onclick
+        html += `<div class="seat ${statusClass}" data-seat-id="${seat.id}" onclick="showBookingModal('${seat.id}')">
                     Место ${seat.seatNumber}<br>${statusText}
                  </div>`;
     });
     html += '</div>';
     container.innerHTML = html;
-    // Обработчик только для свободных мест
-    document.querySelectorAll('.seat.free').forEach(el => {
-        el.addEventListener('click', () => showBookingModal(el.dataset.seatId));
-    });
 }
 
 async function loadMyBookings() {

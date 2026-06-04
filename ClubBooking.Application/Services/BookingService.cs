@@ -18,6 +18,8 @@ namespace ClubBooking.Application.Services
         Task DeleteBookingAsync(Guid bookingId, Guid currentUserId, string currentUserRole);
         // Для администраторов
         Task<BookingResponseDto> CreateBookingForUserAsync(Guid adminUserId, Guid targetUserId, BookingCreateDto dto);
+        Task<BookingResponseDto> UpdateBookingAsync(Guid bookingId, Guid currentUserId, string currentUserRole, BookingCreateDto dto);
+        Task<BookingResponseDto> UpdateBookingAsync(Guid bookingId, Guid userId, string userRole, BookingUpdateDto dto);
     }
 
     public class BookingService : IBookingService
@@ -153,5 +155,58 @@ namespace ClubBooking.Application.Services
                 EndTime = booking.EndTime
             };
         }
+
+
+public async Task<BookingResponseDto> UpdateBookingAsync(Guid bookingId, Guid userId, string userRole, BookingUpdateDto dto)
+{
+    var booking = await _bookingRepo.GetByIdAsync(bookingId);
+    if (booking == null)
+        throw new ArgumentException("Бронь не найдена");
+    if (userRole != "Admin" && userRole != "SuperAdmin" && booking.UserId != userId)
+        throw new UnauthorizedAccessException("Вы можете изменять только свои брони");
+    var isAvailable = await _bookingRepo.IsSeatAvailableForUpdateAsync(booking.SeatId, dto.StartTime, dto.EndTime, bookingId);
+    if (!isAvailable)
+        throw new InvalidOperationException("Место недоступно на выбранный период");
+    booking.StartTime = dto.StartTime;
+    booking.EndTime = dto.EndTime;
+    _bookingRepo.Update(booking);
+    await _bookingRepo.SaveChangesAsync();
+    _logger.LogInformation("Бронь {BookingId} обновлена пользователем {UserId}", bookingId, userId);
+    return await MapToResponseDto(booking);
+}
+
+
+        public async Task<BookingResponseDto> UpdateBookingAsync(Guid bookingId, Guid currentUserId, string currentUserRole, BookingCreateDto dto)
+{
+    var booking = await _bookingRepo.GetByIdAsync(bookingId);
+    if (booking == null)
+        throw new ArgumentException("Бронь не найдена");
+
+    if (currentUserRole != "Admin" && currentUserRole != "SuperAdmin")
+        throw new UnauthorizedAccessException("Только администратор может изменять брони");
+
+    var validationResult = await _validator.ValidateAsync(dto);
+    if (!validationResult.IsValid)
+        throw new ValidationException(validationResult.Errors);
+
+    var seat = await _seatRepo.GetByIdAsync(booking.SeatId);
+    if (seat == null)
+        throw new ArgumentException("Место не найдено");
+
+    // Проверяем конфликты с другими бронями (исключая текущую)
+    var overlapping = await _bookingRepo.FindAsync(b => b.SeatId == booking.SeatId &&
+                                                         b.Id != bookingId &&
+                                                         !(b.EndTime <= dto.StartTime || b.StartTime >= dto.EndTime));
+    if (overlapping.Any())
+        throw new InvalidOperationException("Выбранное время конфликтует с другой бронью на этом месте");
+
+    booking.StartTime = dto.StartTime;
+    booking.EndTime = dto.EndTime;
+    _bookingRepo.Update(booking);
+    await _bookingRepo.SaveChangesAsync();
+
+    _logger.LogInformation("Бронь {BookingId} обновлена администратором {UserId}", bookingId, currentUserId);
+    return await MapToResponseDto(booking);
+}
     }
 }

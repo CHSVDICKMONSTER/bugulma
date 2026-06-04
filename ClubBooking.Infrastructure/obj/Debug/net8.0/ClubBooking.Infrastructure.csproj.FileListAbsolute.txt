@@ -17,3 +17,4 @@ D:\Diplo\ClubBooking\ClubBooking.Infrastructure\obj\Debug\net8.0\refint\ClubBook
 D:\Diplo\ClubBooking\ClubBooking.Infrastructure\obj\Debug\net8.0\ClubBooking.Infrastructure.pdb
 D:\Diplo\ClubBooking\ClubBooking.Infrastructure\obj\Debug\net8.0\ClubBooking.Infrastructure.genruntimeconfig.cache
 D:\Diplo\ClubBooking\ClubBooking.Infrastructure\obj\Debug\net8.0\ref\ClubBooking.Infrastructure.dll
+D:\Diplo\ClubBooking\ClubBooking.Infrastructure\obj\Debug\net8.0\ClubBooking.Infrastructure.sourcelink.json

@@ -28,4 +28,10 @@ namespace ClubBooking.Application.DTOs
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
 }
+public class BookingUpdateDto
+{
+    public Guid SeatId { get; set; }
+    public DateTime StartTime { get; set; }
+    public DateTime EndTime { get; set; }
+}
 }

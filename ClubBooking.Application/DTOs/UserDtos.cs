@@ -9,4 +9,8 @@ namespace ClubBooking.Application.DTOs
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
     }
+    public class UpdateNicknameDto
+{
+    public string NewNickname { get; set; } = string.Empty;
+}
 }

@@ -12,6 +12,9 @@ namespace ClubBooking.Application.Services
     {
         Task<AuthResponseDto> RegisterAsync(RegisterDto dto);
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
+        Task ChangePasswordAsync(Guid userId, ChangePasswordDto dto);
+        Task ChangeNicknameAsync(Guid userId, ChangeNicknameDto dto);
+        Task DeleteAccountAsync(Guid userId);
     }
 
     public class AuthService : IAuthService
@@ -35,7 +38,7 @@ namespace ClubBooking.Application.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
         {
-            // Безопасная нормализация с обработкой null
+            // Нормализация
             dto.Email = (dto.Email?.Trim().ToLowerInvariant()) ?? "";
             dto.Nickname = (dto.Nickname?.Trim()) ?? "";
 
@@ -96,6 +99,54 @@ namespace ClubBooking.Application.Services
             var token = _tokenGenerator.GenerateToken(user.Id, user.Nickname, user.Role.ToString());
             _logger.LogInformation("Пользователь {Nickname} вошёл в систему", user.Nickname);
             return new AuthResponseDto { Token = token, Nickname = user.Nickname, Role = user.Role.ToString() };
+        }
+
+        public async Task ChangePasswordAsync(Guid userId, ChangePasswordDto dto)
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null)
+                throw new ArgumentException("Пользователь не найден");
+
+            if (!_passwordHasher.VerifyPassword(dto.CurrentPassword, user.PasswordHash))
+                throw new UnauthorizedAccessException("Неверный текущий пароль");
+
+            if (string.IsNullOrWhiteSpace(dto.NewPassword) || dto.NewPassword.Length < 6)
+                throw new ArgumentException("Новый пароль должен содержать минимум 6 символов");
+
+            user.PasswordHash = _passwordHasher.HashPassword(dto.NewPassword);
+            _userRepo.Update(user);
+            await _userRepo.SaveChangesAsync();
+            _logger.LogInformation("Пароль изменён для пользователя {UserId}", userId);
+        }
+
+        public async Task ChangeNicknameAsync(Guid userId, ChangeNicknameDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.NewNickname) || dto.NewNickname.Length < 3)
+                throw new ArgumentException("Никнейм должен содержать минимум 3 символа");
+
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null)
+                throw new ArgumentException("Пользователь не найден");
+
+            var existing = await _userRepo.GetByNicknameAsync(dto.NewNickname);
+            if (existing != null && existing.Id != userId)
+                throw new InvalidOperationException("Никнейм уже занят");
+
+            user.Nickname = dto.NewNickname;
+            _userRepo.Update(user);
+            await _userRepo.SaveChangesAsync();
+            _logger.LogInformation("Никнейм изменён для пользователя {UserId} на {NewNickname}", userId, dto.NewNickname);
+        }
+
+        public async Task DeleteAccountAsync(Guid userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null)
+                throw new ArgumentException("Пользователь не найден");
+
+            _userRepo.Delete(user);
+            await _userRepo.SaveChangesAsync();
+            _logger.LogInformation("Аккаунт {UserId} удалён", userId);
         }
     }
 }

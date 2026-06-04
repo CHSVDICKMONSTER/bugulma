@@ -131,3 +131,4 @@ D:\Diplo\ClubBooking\ClubBooking.API\obj\Debug\net8.0\refint\ClubBooking.API.dll
 D:\Diplo\ClubBooking\ClubBooking.API\obj\Debug\net8.0\ClubBooking.API.pdb
 D:\Diplo\ClubBooking\ClubBooking.API\obj\Debug\net8.0\ClubBooking.API.genruntimeconfig.cache
 D:\Diplo\ClubBooking\ClubBooking.API\obj\Debug\net8.0\ref\ClubBooking.API.dll
+D:\Diplo\ClubBooking\ClubBooking.API\obj\Debug\net8.0\ClubBooking.API.sourcelink.json

@@ -13,3 +13,4 @@ D:\Diplo\ClubBooking\ClubBooking.Application\obj\Debug\net8.0\ClubBooking.Applic
 D:\Diplo\ClubBooking\ClubBooking.Application\obj\Debug\net8.0\refint\ClubBooking.Application.dll
 D:\Diplo\ClubBooking\ClubBooking.Application\obj\Debug\net8.0\ClubBooking.Application.pdb
 D:\Diplo\ClubBooking\ClubBooking.Application\obj\Debug\net8.0\ref\ClubBooking.Application.dll
+D:\Diplo\ClubBooking\ClubBooking.Application\obj\Debug\net8.0\ClubBooking.Application.sourcelink.json

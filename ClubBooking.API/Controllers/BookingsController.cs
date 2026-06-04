@@ -77,5 +77,19 @@ public async Task<IActionResult> CreateBookingForUser([FromBody] AdminBookingCre
     });
     return Ok(booking);
 }
+
+[Authorize(Roles = "Admin,SuperAdmin")]
+[HttpPut("{id}")]
+public async Task<IActionResult> UpdateBooking(Guid id, [FromBody] BookingCreateDto dto)
+{
+    var userId = GetCurrentUserId();
+    var role = GetCurrentUserRole();
+    var updated = await _bookingService.UpdateBookingAsync(id, userId, role, dto);
+    return Ok(updated);
+}
+
+
+
+
     }
 }

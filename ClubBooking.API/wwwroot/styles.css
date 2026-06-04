@@ -37,8 +37,10 @@ body {
 }
 
 .app {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 20px; /* или уберите, если не нужно */
 }
 
 header {
@@ -336,4 +338,68 @@ button:hover {
 
 .booking-btn-secondary:hover {
     background: var(--border, #dee2e6);
+}
+
+/* Уменьшение второй строки заголовка */
+.auth-title-small {
+    font-size: 0.7em !important;
+    display: inline-block;
+}
+
+/* Увеличение отступа между заголовком и кнопками */
+.card:first-of-type .nav-buttons {
+    margin-top: 3rem !important;
+}
+
+/* Кнопка "Зарегистрироваться" – ширина 50% (как у полей ввода) */
+#submitRegister {
+    width: 50% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+}
+
+/* Принудительный серый фон для всей страницы в светлой теме */
+html, body, .app, main, #mainContent {
+    background-color: #f5f5f5 !important;
+}
+/* Карточки остаются белыми */
+.card {
+    background-color: #ffffff !important;
+}
+
+/* Убираем старую полоску у header */
+header {
+    border-bottom: none !important;
+}
+
+/* Добавляем новую полоску на всю ширину экрана */
+.header-divider {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    height: 2px;
+    background-color: var(--border);
+    margin-bottom: 30px;
+}
+
+/* Фон под полоской (вся область main) делаем серым */
+main {
+    background-color: #1e293f !important; /* или любой другой серый */
+    padding: 1px 0; /* чтобы отступы не схлопнулись */
+    margin-top: -1px; /* убираем лишний отступ */
+}
+
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+    background: white !important;
+}
+.app {
+    min-height: 100vh;
 }

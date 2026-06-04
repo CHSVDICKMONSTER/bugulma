@@ -10,5 +10,6 @@ namespace ClubBooking.Domain.Interfaces
         Task<IEnumerable<Booking>> GetByUserIdAsync(Guid userId);
         Task<IEnumerable<Booking>> GetByClubIdAsync(Guid clubId);
         Task<bool> IsSeatAvailableAsync(Guid seatId, DateTime start, DateTime end);
+        Task<bool> IsSeatAvailableForUpdateAsync(Guid seatId, DateTime start, DateTime end, Guid excludeBookingId);
     }
 }

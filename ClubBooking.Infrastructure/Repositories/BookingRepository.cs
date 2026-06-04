@@ -27,10 +27,22 @@ namespace ClubBooking.Infrastructure.Repositories
         }
 
         public async Task<bool> IsSeatAvailableAsync(Guid seatId, DateTime start, DateTime end)
-        {
-            var overlapping = await _dbSet.AnyAsync(b => b.SeatId == seatId &&
-                !(b.EndTime <= start || b.StartTime >= end));
-            return !overlapping;
-        }
+{
+    // Округляем до минут (уберегаем от миллисекунд)
+    start = new DateTime(start.Year, start.Month, start.Day, start.Hour, start.Minute, 0, DateTimeKind.Utc);
+    end   = new DateTime(end.Year,   end.Month,   end.Day,   end.Hour,   end.Minute,   0, DateTimeKind.Utc);
+
+    // Проверка пересечения: есть ли бронь, где интервалы пересекаются
+    var overlapping = await _dbSet.AnyAsync(b => b.SeatId == seatId &&
+        b.StartTime < end && b.EndTime > start);
+    return !overlapping;
+}
+public async Task<bool> IsSeatAvailableForUpdateAsync(Guid seatId, DateTime start, DateTime end, Guid excludeBookingId)
+{
+    var overlapping = await _dbSet.AnyAsync(b => b.SeatId == seatId && b.Id != excludeBookingId &&
+        !(b.EndTime <= start || b.StartTime >= end));
+    return !overlapping;
+}
     }
+    
 }
