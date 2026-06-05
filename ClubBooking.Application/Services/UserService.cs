@@ -7,6 +7,7 @@ using ClubBooking.Domain.Interfaces;
 using ClubBooking.Application.DTOs;
 using Microsoft.Extensions.Logging;
 
+
 namespace ClubBooking.Application.Services
 {
     public interface IUserService
@@ -16,6 +17,7 @@ namespace ClubBooking.Application.Services
     Task DeleteUserAsync(Guid userId);
     Task UpdateNicknameAsync(Guid userId, string newNickname);   // новое
     Task DeleteCurrentUserAsync(Guid userId);                   // новое
+    Task<UserResponseDto> UpdateUserAsync(Guid userId, UserUpdateDto dto);
 }
 
 public class UserService : IUserService
@@ -98,5 +100,42 @@ public class UserService : IUserService
         _logger.LogInformation("Пользователь {UserId} удалил свой аккаунт", userId);
     }
 
+
+public async Task<UserResponseDto> UpdateUserAsync(Guid userId, UserUpdateDto dto)
+{
+    var user = await _userRepo.GetByIdAsync(userId);
+    if (user == null)
+        throw new ArgumentException("Пользователь не найден");
+
+    // Проверка уникальности никнейма (если изменён)
+    if (!string.IsNullOrWhiteSpace(dto.Nickname) && dto.Nickname != user.Nickname)
+    {
+        var existing = await _userRepo.GetByNicknameAsync(dto.Nickname);
+        if (existing != null && existing.Id != userId)
+            throw new InvalidOperationException("Никнейм уже занят");
+        user.Nickname = dto.Nickname;
+    }
+
+    // Проверка уникальности email (если изменён)
+    if (!string.IsNullOrWhiteSpace(dto.Email) && dto.Email != user.Email)
+    {
+        var existing = await _userRepo.GetByEmailAsync(dto.Email);
+        if (existing != null && existing.Id != userId)
+            throw new InvalidOperationException("Email уже зарегистрирован");
+        user.Email = dto.Email;
+    }
+
+    _userRepo.Update(user);
+    await _userRepo.SaveChangesAsync();
+
+    _logger.LogInformation("Пользователь {UserId} обновлён", userId);
+    return new UserResponseDto
+    {
+        Id = user.Id,
+        Nickname = user.Nickname,
+        Email = user.Email,
+        Role = user.Role.ToString()
+    };
+}
     }
 }

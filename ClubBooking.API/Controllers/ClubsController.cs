@@ -40,5 +40,14 @@ namespace ClubBooking.API.Controllers
             await _clubService.DeleteClubAsync(id);
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> UpdateClub(Guid id, [FromBody] ClubUpdateDto dto)
+        {
+            var updated = await _clubService.UpdateClubAsync(id, dto);
+            return Ok(updated);
+        }
+
     }
 }

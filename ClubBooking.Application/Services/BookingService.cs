@@ -20,6 +20,7 @@ namespace ClubBooking.Application.Services
         Task<BookingResponseDto> CreateBookingForUserAsync(Guid adminUserId, Guid targetUserId, BookingCreateDto dto);
         Task<BookingResponseDto> UpdateBookingAsync(Guid bookingId, Guid currentUserId, string currentUserRole, BookingCreateDto dto);
         Task<BookingResponseDto> UpdateBookingAsync(Guid bookingId, Guid userId, string userRole, BookingUpdateDto dto);
+        Task<IEnumerable<BookingResponseDto>> GetUserBookingsByUserIdAsync(Guid userId);
     }
 
     public class BookingService : IBookingService
@@ -207,6 +208,14 @@ public async Task<BookingResponseDto> UpdateBookingAsync(Guid bookingId, Guid us
 
     _logger.LogInformation("Бронь {BookingId} обновлена администратором {UserId}", bookingId, currentUserId);
     return await MapToResponseDto(booking);
+}
+public async Task<IEnumerable<BookingResponseDto>> GetUserBookingsByUserIdAsync(Guid userId)
+{
+    var bookings = await _bookingRepo.GetByUserIdAsync(userId);
+    var result = new List<BookingResponseDto>();
+    foreach (var booking in bookings)
+        result.Add(await MapToResponseDto(booking));
+    return result;
 }
     }
 }

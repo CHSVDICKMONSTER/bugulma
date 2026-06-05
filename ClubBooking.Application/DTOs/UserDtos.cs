@@ -13,4 +13,9 @@ namespace ClubBooking.Application.DTOs
 {
     public string NewNickname { get; set; } = string.Empty;
 }
+public class UserUpdateDto
+{
+    public string Nickname { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}
 }

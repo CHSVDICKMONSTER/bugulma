@@ -15,4 +15,9 @@ public class CreateClubDto
     [JsonPropertyName("numberOfSeats")]
     public int NumberOfSeats { get; set; } = 5;
 }
+public class ClubUpdateDto
+{
+    public string Address { get; set; } = string.Empty;
+    public int NumberOfSeats { get; set; }
+}
 }

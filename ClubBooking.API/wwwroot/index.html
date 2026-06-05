@@ -255,6 +255,16 @@ h1 {
     let authToken = localStorage.getItem('token');
     let currentUser = null;
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+    
     function setAuthToken(token) {
         authToken = token;
         if (token) localStorage.setItem('token', token);
@@ -442,32 +452,95 @@ h1 {
     }
 
     async function loadMyBookings() {
-        const container = document.getElementById('myBookingsList');
-        if (!container) return;
-        try {
-            const bookings = await apiRequest('/bookings/my');
-            if (!bookings.length) { container.innerHTML = '<p>Нет броней</p>'; return; }
-            let html = '<ul class="booking-list">';
-            bookings.forEach(b => {
-                html += `<li><span>Клуб: ${b.clubAddress}, Место ${b.seatNumber}, ${new Date(b.startTime).toLocaleString()} - ${new Date(b.endTime).toLocaleString()}</span>
-                         <button class="delete-btn" data-booking-id="${b.id}">Отменить</button></li>`;
+    const container = document.getElementById('myBookingsList');
+    if (!container) return;
+    try {
+        const bookings = await apiRequest('/bookings/my');
+        if (!bookings.length) {
+            container.innerHTML = '<p>Нет броней</p>';
+            return;
+        }
+        let html = '<ul class="booking-list">';
+        bookings.forEach(b => {
+            // Форматируем дату и время без секунд
+            const startDate = new Date(b.startTime);
+            const endDate = new Date(b.endTime);
+            const formatDate = (date) => {
+                return date.toLocaleDateString() + ', ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            };
+            const startStr = formatDate(startDate);
+            const endStr = formatDate(endDate);
+            
+            html += `
+                <li>
+                    <div>
+                        <strong>Клуб:</strong> ${escapeHtml(b.clubAddress)}<br>
+                        <strong>Место:</strong> ${b.seatNumber}<br>
+                        <strong>Время:</strong> ${startStr} - ${endStr}
+                    </div>
+                    <div>
+                        <button class="delete-btn" data-booking-id="${b.id}">Отменить</button>
+                    </div>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+        
+        // Обработчики удаления
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = btn.dataset.bookingId;
+                await apiRequest(`/bookings/${id}`, 'DELETE');
+                await loadMyBookings();
+                const clubSelect = document.getElementById('clubSelect');
+                if (clubSelect && clubSelect.value) {
+                    const seats = await apiRequest(`/seats/club/${clubSelect.value}`);
+                    renderSeats(seats);
+                }
             });
-            html += '</ul>';
-            container.innerHTML = html;
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const id = btn.dataset.bookingId;
-                    await apiRequest(`/bookings/${id}`, 'DELETE');
-                    await loadMyBookings();
-                    const clubSelect = document.getElementById('clubSelect');
-                    if (clubSelect && clubSelect.value) {
-                        const seats = await apiRequest(`/seats/club/${clubSelect.value}`);
-                        renderSeats(seats);
-                    }
-                });
-            });
-        } catch (err) { console.error(err); }
+        });
+    } catch (err) {
+        console.error(err);
     }
+}
+
+
+async function loadClientStats() {
+    const container = document.getElementById('statsContainer');
+    if (!container) return;
+    try {
+        const bookings = await apiRequest('/bookings/my');
+        const totalBookings = bookings.length;
+        let totalHours = 0;
+        bookings.forEach(b => {
+            const start = new Date(b.startTime);
+            const end = new Date(b.endTime);
+            const hours = (end - start) / (1000 * 60 * 60);
+            totalHours += hours;
+        });
+        // Округляем до 1 знака после запятой
+        totalHours = Math.round(totalHours * 10) / 10;
+        
+        container.innerHTML = `
+            <div style="display: flex; gap: 30px; justify-content: space-around; text-align: center;">
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold;">${totalBookings}</div>
+                    <div>Посещений</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold;">${totalHours}</div>
+                    <div>Наиграно часов</div>
+                </div>
+            </div>
+        `;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p>Ошибка загрузки статистики</p>';
+    }
+}
+
+
 
     async function loadAdminBookings(clubId) {
         const container = document.getElementById('adminBookingsList');
@@ -580,26 +653,175 @@ h1 {
     }
 
     async function loadClientsList() {
-        const container = document.getElementById('clientsList');
-        if (!container) return;
-        try {
-            const clients = await apiRequest('/users/clients');
-            if (!clients.length) { container.innerHTML = '<p>Нет клиентов</p>'; return; }
-            let html = '<ul class="user-list">';
-            clients.forEach(c => {
-                html += `<li><span>${c.nickname} (${c.email})</span><button class="delete-btn" data-user-id="${c.id}">Удалить</button></li>`;
-            });
-            html += '</ul>';
-            container.innerHTML = html;
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const userId = btn.dataset.userId;
+    const container = document.getElementById('clientsList');
+    if (!container) return;
+    try {
+        const clients = await apiRequest('/users/clients');
+        if (!clients.length) { container.innerHTML = '<p>Нет клиентов</p>'; return; }
+        let html = '<ul class="user-list">';
+        clients.forEach(c => {
+            html += `<li>
+                        <span><strong>${escapeHtml(c.nickname)}</strong> (${escapeHtml(c.email)})</span>
+                        <div>
+                            <button class="history-client-btn" data-user-id="${c.id}" title="История броней">📋</button>
+                            <button class="edit-client-btn" data-user-id="${c.id}" data-nickname="${escapeHtml(c.nickname)}" data-email="${escapeHtml(c.email)}" title="Редактировать">✏️</button>
+                            <button class="delete-btn" data-user-id="${c.id}" title="Удалить">🗑️</button>
+                        </div>
+                     </li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+
+        // Удаление
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const userId = btn.dataset.userId;
+                if (confirm('Удалить пользователя?')) {
                     await apiRequest(`/users/${userId}`, 'DELETE');
                     await loadClientsList();
-                });
+                }
             });
-        } catch (err) { alert(err.message); }
+        });
+
+        // Редактирование
+        document.querySelectorAll('.edit-client-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const userId = btn.dataset.userId;
+                const currentNick = btn.dataset.nickname;
+                const currentEmail = btn.dataset.email;
+                showEditClientModal(userId, currentNick, currentEmail);
+            });
+        });
+
+        // История броней (НОВАЯ КНОПКА)
+        document.querySelectorAll('.history-client-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const userId = btn.dataset.userId;
+                await showUserHistoryModal(userId);
+            });
+        });
+    } catch (err) { alert('Ошибка загрузки клиентов: ' + err.message); }
+}
+
+
+async function showEditClientModal(userId, currentNick, currentEmail) {
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'modal';
+    modalDiv.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Редактирование клиента</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Новый никнейм</label><input id="editNickname" type="text" value="${escapeHtml(currentNick)}"></div>
+                <div class="form-group"><label>Новый email</label><input id="editEmail" type="email" value="${escapeHtml(currentEmail)}"></div>
+                <div id="editClientError" class="error-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveClientBtn" style="background:#3b82f6;color:white;">💾 Сохранить</button>
+                <button id="cancelClientBtn" style="background:#6c757d;color:white;">❌ Отмена</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modalDiv);
+    const close = () => modalDiv.remove();
+    modalDiv.querySelector('.modal-close').onclick = close;
+    modalDiv.querySelector('#cancelClientBtn').onclick = close;
+    const saveBtn = modalDiv.querySelector('#saveClientBtn');
+    const errorDiv = modalDiv.querySelector('#editClientError');
+    saveBtn.onclick = async () => {
+        const nickname = modalDiv.querySelector('#editNickname').value.trim();
+        const email = modalDiv.querySelector('#editEmail').value.trim();
+        if (!nickname || !email) {
+            errorDiv.textContent = 'Заполните все поля';
+            return;
+        }
+        try {
+            await apiRequest(`/users/${userId}`, 'PUT', { nickname, email });
+            alert('Данные клиента обновлены');
+            close();
+            await loadClientsList(); // обновить список
+        } catch (err) {
+            errorDiv.textContent = err.message;
+        }
+    };
+    modalDiv.addEventListener('click', (e) => { if (e.target === modalDiv) close(); });
+}
+
+
+
+async function showUserHistoryModal(userId) {
+    try {
+        const bookings = await apiRequest(`/bookings/user/${userId}`);
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'modal';
+
+        const formatDateTime = (date) => {
+            return date.toLocaleDateString() + ', ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        };
+
+        if (!bookings.length) {
+            modalDiv.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>📋 История броней</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>У пользователя нет броней.</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            let html = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>📋 История броней</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+            `;
+            bookings.forEach(b => {
+                let status = '';
+                const now = new Date();
+                const start = new Date(b.startTime);
+                const end = new Date(b.endTime);
+                if (end < now) status = 'Завершена';
+                else if (start <= now && end >= now) status = 'Активна';
+                else status = 'Будущая';
+
+                html += `
+                    <div style="border-bottom: 1px solid var(--border, #ccc); padding: 10px 0;">
+                        <strong>Клуб:</strong> ${escapeHtml(b.clubAddress)}<br>
+                        <strong>Место:</strong> ${b.seatNumber}<br>
+                        <strong>Начало:</strong> ${formatDateTime(start)}<br>
+                        <strong>Конец:</strong> ${formatDateTime(end)}<br>
+                        <strong>Статус:</strong> ${status}
+                    </div>
+                `;
+            });
+            html += `
+                    </div>
+                    <div class="modal-footer">
+                        <button class="modal-close" style="background:#6c757d;color:white;">Закрыть</button>
+                    </div>
+                </div>
+            `;
+            modalDiv.innerHTML = html;
+        }
+
+        document.body.appendChild(modalDiv);
+        const close = () => modalDiv.remove();
+        modalDiv.querySelectorAll('.modal-close').forEach(btn => btn.onclick = close);
+        modalDiv.addEventListener('click', (e) => { if (e.target === modalDiv) close(); });
+    } catch (err) {
+        alert('Ошибка загрузки истории броней: ' + err.message);
     }
+}
+
+
+
 
     function showSettingsModal() {
         const modal = document.createElement('div');
@@ -669,8 +891,10 @@ h1 {
         const clubs = await apiRequest('/clubs');
         let html = `<div class="card"><h2>Добро пожаловать, ${currentUser.nickname} (${role})</h2></div>`;
         if (role === 'Client') {
-            html += `<div class="card"><h3>Выберите клуб</h3><select id="clubSelect">${clubs.map(c => `<option value="${c.id}">${c.address}</option>`).join('')}</select><div id="seatsContainer"></div></div>
-                     <div class="card"><h3>Мои брони</h3><div id="myBookingsList"></div></div>`;
+    html += `<div class="card"><h3>Выберите клуб</h3><select id="clubSelect">${clubs.map(c => `<option value="${c.id}">${c.address}</option>`).join('')}</select><div id="seatsContainer"></div></div>
+             <div class="card"><h3>Мои брони</h3><div id="myBookingsList"></div></div>
+             <div class="card"><h3>📊 Быстрая статистика</h3><div id="statsContainer">Загрузка...</div></div>
+             <div class="card"><h3>📋 История броней</h3><button id="showHistoryBtn">Показать все мои брони</button><div id="historyList" style="display: none;"></div></div>`;
         } else if (role === 'Admin') {
             html += `<div class="card"><h3>Управление бронями</h3><div class="admin-select"><label>Клуб:</label><select id="adminClubSelect">${clubs.map(c => `<option value="${c.id}">${c.address}</option>`).join('')}</select></div>
                      <button id="showBookingsBtn">Показать брони</button><div id="adminBookingsList"></div></div>
@@ -692,6 +916,8 @@ h1 {
             clubSelect.addEventListener('change', loadSeats);
             await loadSeats();
             await loadMyBookings();
+            await loadClientStats();
+            document.getElementById('showHistoryBtn').onclick = () => showClientHistoryModal();
         } else if (role === 'Admin') {
             const adminClubSelect = document.getElementById('adminClubSelect');
             document.getElementById('showBookingsBtn').onclick = async () => {
@@ -711,51 +937,204 @@ h1 {
                 await loadClientsList();
             };
             document.getElementById('manageClubsBtn').onclick = async () => {
-                try {
-                    const clubsData = await apiRequest('/clubs');
-                    const div = document.getElementById('clubsManagement');
-                    let clubsHtml = '<h4>Существующие клубы</h4><ul id="clubsList">';
-                    clubsData.forEach(c => {
-                        clubsHtml += `<li>${c.address} <button class="delete-club-btn" data-club-id="${c.id}">Удалить</button></li>`;
-                    });
-                    clubsHtml += '</ul>';
-                    clubsHtml += `<h4>Новый клуб</h4>
-                                  <input id="newClubAddress" placeholder="Адрес">
-                                  <label style="display: block; margin-top: 10px;">Выберите количество мест нового клуба:</label>
-                                  <select id="newClubSeats">
-                                      <option value="2">2 места</option>
-                                      <option value="3">3 места</option>
-                                      <option value="4">4 места</option>
-                                      <option value="5">5 мест</option>
-                                      <option value="6">6 мест</option>
-                                  </select>
-                                  <button id="addClubBtn">Добавить</button>`;
-                    div.innerHTML = clubsHtml;
-                    document.querySelectorAll('.delete-club-btn').forEach(btn => {
-                        btn.addEventListener('click', async () => {
-                            const clubId = btn.dataset.clubId;
-                            if (confirm('Удалить клуб? Все места и брони также будут удалены.')) {
-                                await apiRequest(`/clubs/${clubId}`, 'DELETE');
-                                location.reload();
-                            }
-                        });
-                    });
-                    const addBtn = document.getElementById('addClubBtn');
-                    if (addBtn) {
-                        addBtn.onclick = async () => {
-                            const address = document.getElementById('newClubAddress').value;
-                            const seats = parseInt(document.getElementById('newClubSeats').value, 10);
-                            if (!address) { alert('Введите адрес'); return; }
-                            await apiRequest('/clubs', 'POST', { address, numberOfSeats: seats });
-                            location.reload();
-                        };
-                    }
-                } catch (err) {
-                    alert('Ошибка загрузки списка клубов');
+    try {
+        const clubsData = await apiRequest('/clubs');
+        const div = document.getElementById('clubsManagement');
+        let clubsHtml = '<h4>Существующие клубы</h4><ul id="clubsList">';
+        clubsData.forEach(c => {
+            clubsHtml += `<li>
+                            ${escapeHtml(c.address)}
+                            <div>
+                                <button class="edit-club-btn" data-club-id="${c.id}" data-address="${escapeHtml(c.address)}">✏️</button>
+                                <button class="delete-club-btn" data-club-id="${c.id}">🗑️</button>
+                            </div>
+                          </li>`;
+        });
+        clubsHtml += '</ul>';
+        clubsHtml += `<h4>Новый клуб</h4>
+                      <input id="newClubAddress" placeholder="Адрес">
+                      <label style="display: block; margin-top: 10px;">Выберите количество мест нового клуба:</label>
+                      <select id="newClubSeats">
+                          <option value="2">2 места</option>
+                          <option value="3">3 места</option>
+                          <option value="4">4 места</option>
+                          <option value="5">5 мест</option>
+                          <option value="6">6 мест</option>
+                      </select>
+                      <button id="addClubBtn">Добавить</button>`;
+        div.innerHTML = clubsHtml;
+
+        // Удаление клуба
+        document.querySelectorAll('.delete-club-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const clubId = btn.dataset.clubId;
+                if (confirm('Удалить клуб? Все места и брони также будут удалены.')) {
+                    await apiRequest(`/clubs/${clubId}`, 'DELETE');
+                    location.reload();
                 }
+            });
+        });
+
+        // Редактирование клуба
+        document.querySelectorAll('.edit-club-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const clubId = btn.dataset.clubId;
+                const currentAddress = btn.dataset.address;
+                // Получаем количество мест
+                const seats = await apiRequest(`/seats/club/${clubId}`);
+                const currentSeats = seats.length;
+                showEditClubModal(clubId, currentAddress, currentSeats);
+            });
+        });
+
+        // Добавление нового клуба
+        const addBtn = document.getElementById('addClubBtn');
+        if (addBtn) {
+            addBtn.onclick = async () => {
+                const address = document.getElementById('newClubAddress').value.trim();
+                const seats = parseInt(document.getElementById('newClubSeats').value, 10);
+                if (!address) { alert('Введите адрес'); return; }
+                await apiRequest('/clubs', 'POST', { address, numberOfSeats: seats });
+                location.reload();
             };
         }
+    } catch (err) {
+        alert('Ошибка загрузки списка клубов');
     }
+};
+        }
+    }
+
+
+async function showEditClubModal(clubId, currentAddress) {
+    // Сначала узнаем текущее количество мест
+    const seats = await apiRequest(`/seats/club/${clubId}`);
+    const currentSeats = seats.length;
+
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'modal';
+    modalDiv.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Редактирование клуба</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Новый адрес</label><input id="editAddress" type="text" value="${currentAddress}"></div>
+                <div class="form-group"><label>Новое количество мест (2-6)</label>
+                    <select id="editSeats">
+                        <option value="2" ${currentSeats===2 ? 'selected' : ''}>2 места</option>
+                        <option value="3" ${currentSeats===3 ? 'selected' : ''}>3 места</option>
+                        <option value="4" ${currentSeats===4 ? 'selected' : ''}>4 места</option>
+                        <option value="5" ${currentSeats===5 ? 'selected' : ''}>5 мест</option>
+                        <option value="6" ${currentSeats===6 ? 'selected' : ''}>6 мест</option>
+                    </select>
+                </div>
+                <div id="editClubError" class="error-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveClubBtn" style="background:#3b82f6;color:white;">💾 Сохранить</button>
+                <button id="cancelClubBtn" style="background:#6c757d;color:white;">❌ Отмена</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modalDiv);
+    const close = () => modalDiv.remove();
+    modalDiv.querySelector('.modal-close').onclick = close;
+    modalDiv.querySelector('#cancelClubBtn').onclick = close;
+    const saveBtn = modalDiv.querySelector('#saveClubBtn');
+    const errorDiv = modalDiv.querySelector('#editClubError');
+    saveBtn.onclick = async () => {
+        const address = modalDiv.querySelector('#editAddress').value.trim();
+        const seats = parseInt(modalDiv.querySelector('#editSeats').value, 10);
+        if (!address) {
+            errorDiv.textContent = 'Адрес не может быть пустым';
+            return;
+        }
+        try {
+            await apiRequest(`/clubs/${clubId}`, 'PUT', { address, numberOfSeats: seats });
+            alert('Клуб обновлён');
+            close();
+            location.reload(); // проще перезагрузить страницу
+        } catch (err) {
+            errorDiv.textContent = err.message;
+        }
+    };
+    modalDiv.addEventListener('click', (e) => { if (e.target === modalDiv) close(); });
+}
+
+
+
+async function showClientHistoryModal() {
+    try {
+        const bookings = await apiRequest('/bookings/my');
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'modal';
+
+        const formatDateTime = (date) => {
+            return date.toLocaleDateString() + ', ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        };
+
+        if (!bookings.length) {
+            modalDiv.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>📋 История моих броней</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>У вас нет броней.</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            let html = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>📋 История моих броней</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+            `;
+            bookings.forEach(b => {
+                let status = '';
+                const now = new Date();
+                const start = new Date(b.startTime);
+                const end = new Date(b.endTime);
+                if (end < now) status = 'Завершена';
+                else if (start <= now && end >= now) status = 'Активна';
+                else status = 'Будущая';
+
+                html += `
+                    <div style="border-bottom: 1px solid var(--border, #ccc); padding: 10px 0;">
+                        <strong>Клуб:</strong> ${escapeHtml(b.clubAddress)}<br>
+                        <strong>Место:</strong> ${b.seatNumber}<br>
+                        <strong>Начало:</strong> ${formatDateTime(start)}<br>
+                        <strong>Конец:</strong> ${formatDateTime(end)}<br>
+                        <strong>Статус:</strong> ${status}
+                    </div>
+                `;
+            });
+            html += `
+                    </div>
+                    <div class="modal-footer">
+                        <button class="modal-close" style="background:#6c757d;color:white;">Закрыть</button>
+                    </div>
+                </div>
+            `;
+            modalDiv.innerHTML = html;
+        }
+
+        document.body.appendChild(modalDiv);
+        const close = () => modalDiv.remove();
+        modalDiv.querySelectorAll('.modal-close').forEach(btn => btn.onclick = close);
+        modalDiv.addEventListener('click', (e) => { if (e.target === modalDiv) close(); });
+    } catch (err) {
+        alert('Ошибка загрузки истории броней: ' + err.message);
+    }
+}
+
+
 
     // Сохранение темы
     const themeToggle = document.getElementById('themeToggle');

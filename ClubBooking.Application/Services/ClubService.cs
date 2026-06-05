@@ -13,6 +13,7 @@ namespace ClubBooking.Application.Services
         Task<IEnumerable<ClubDto>> GetAllClubsAsync();
         Task<ClubDto> CreateClubAsync(CreateClubDto dto);
         Task DeleteClubAsync(Guid clubId);
+        Task<ClubDto> UpdateClubAsync(Guid clubId, ClubUpdateDto dto);
     }
 
     public class ClubService : IClubService
@@ -78,5 +79,53 @@ namespace ClubBooking.Application.Services
             await _clubRepo.SaveChangesAsync();
             _logger.LogInformation("Клуб удалён: {ClubId}", clubId);
         }
+        public async Task<ClubDto> UpdateClubAsync(Guid clubId, ClubUpdateDto dto)
+{
+    var club = await _clubRepo.GetByIdAsync(clubId);
+    if (club == null)
+        throw new ArgumentException("Клуб не найден");
+
+    if (!string.IsNullOrWhiteSpace(dto.Address))
+        club.Address = dto.Address;
+
+    await _clubRepo.SaveChangesAsync();
+
+    // Обновление количества мест (если изменилось)
+    var currentSeats = await _seatRepo.GetByClubIdAsync(clubId);
+    int currentCount = currentSeats.Count();
+    int newCount = dto.NumberOfSeats;
+
+    if (newCount < 2 || newCount > 6)
+        throw new ArgumentException("Количество мест должно быть от 2 до 6");
+
+    if (newCount > currentCount)
+    {
+        // Добавляем новые места
+        for (int i = currentCount + 1; i <= newCount; i++)
+        {
+            var seat = new Seat
+            {
+                Id = Guid.NewGuid(),
+                SeatNumber = i,
+                ClubId = clubId
+            };
+            await _seatRepo.AddAsync(seat);
+        }
+    }
+    else if (newCount < currentCount)
+    {
+        // Удаляем лишние места (убедитесь, что на них нет броней)
+        var seatsToRemove = currentSeats.Where(s => s.SeatNumber > newCount).ToList();
+        foreach (var seat in seatsToRemove)
+        {
+            // Проверка на наличие броней (можно добавить)
+            _seatRepo.Delete(seat);
+        }
+    }
+    await _seatRepo.SaveChangesAsync();
+
+    _logger.LogInformation("Клуб {ClubId} обновлён: адрес {Address}, мест {Seats}", clubId, club.Address, newCount);
+    return new ClubDto { Id = club.Id, Address = club.Address };
+}
     }
 }

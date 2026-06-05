@@ -87,5 +87,14 @@ namespace ClubBooking.API.Controllers
             await _userService.DeleteCurrentUserAsync(userId);
             return NoContent();
         }
+        
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserUpdateDto dto)
+        {
+            var updated = await _userService.UpdateUserAsync(id, dto);
+            return Ok(updated);
+        }
+
     }
 }

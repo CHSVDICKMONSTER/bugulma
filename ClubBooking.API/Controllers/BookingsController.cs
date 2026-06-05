@@ -88,7 +88,13 @@ public async Task<IActionResult> UpdateBooking(Guid id, [FromBody] BookingCreate
     return Ok(updated);
 }
 
-
+[Authorize(Roles = "Admin,SuperAdmin")]
+[HttpGet("user/{userId}")]
+public async Task<IActionResult> GetUserBookings(Guid userId)
+{
+    var bookings = await _bookingService.GetUserBookingsByUserIdAsync(userId);
+    return Ok(bookings);
+}
 
 
     }
