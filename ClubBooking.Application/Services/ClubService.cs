@@ -42,8 +42,8 @@ namespace ClubBooking.Application.Services
         {
             if (string.IsNullOrWhiteSpace(dto.Address))
                 throw new ArgumentException("Адрес обязателен");
-            if (dto.NumberOfSeats < 2 || dto.NumberOfSeats > 6)
-                throw new ArgumentException("Количество мест должно быть от 2 до 6");
+            if (dto.NumberOfSeats < 2 || dto.NumberOfSeats > 20)
+    throw new ArgumentException("Количество мест должно быть от 2 до 20");
 
             var club = new Club
             {
@@ -95,8 +95,8 @@ namespace ClubBooking.Application.Services
     int currentCount = currentSeats.Count();
     int newCount = dto.NumberOfSeats;
 
-    if (newCount < 2 || newCount > 6)
-        throw new ArgumentException("Количество мест должно быть от 2 до 6");
+    if (newCount < 2 || newCount > 20)
+        throw new ArgumentException("Количество мест должно быть от 2 до 20");
 
     if (newCount > currentCount)
     {

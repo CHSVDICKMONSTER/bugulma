@@ -18,4 +18,10 @@ public class UserUpdateDto
     public string Nickname { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 }
+
+ public class UpdateEmailDto
+{
+    public string Email { get; set; } = string.Empty;
+}
+
 }

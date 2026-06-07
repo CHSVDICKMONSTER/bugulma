@@ -18,6 +18,8 @@ namespace ClubBooking.Application.Services
     Task UpdateNicknameAsync(Guid userId, string newNickname);   // новое
     Task DeleteCurrentUserAsync(Guid userId);                   // новое
     Task<UserResponseDto> UpdateUserAsync(Guid userId, UserUpdateDto dto);
+    Task UpdateEmailAsync(Guid userId, string email);
+Task<UserResponseDto> GetUserByIdAsync(Guid userId);
 }
 
 public class UserService : IUserService
@@ -129,6 +131,40 @@ public async Task<UserResponseDto> UpdateUserAsync(Guid userId, UserUpdateDto dt
     await _userRepo.SaveChangesAsync();
 
     _logger.LogInformation("Пользователь {UserId} обновлён", userId);
+    return new UserResponseDto
+    {
+        Id = user.Id,
+        Nickname = user.Nickname,
+        Email = user.Email,
+        Role = user.Role.ToString()
+    };
+}
+
+
+
+public async Task UpdateEmailAsync(Guid userId, string email)
+{
+    if (string.IsNullOrWhiteSpace(email))
+        throw new ArgumentException("Email не может быть пустым");
+
+    var user = await _userRepo.GetByIdAsync(userId);
+    if (user == null)
+        throw new ArgumentException("Пользователь не найден");
+
+    // Проверка на уникальность email
+    var existingUser = await _userRepo.GetByEmailAsync(email);
+    if (existingUser != null && existingUser.Id != userId)
+        throw new InvalidOperationException("Этот email уже зарегистрирован другим пользователем");
+
+    user.Email = email;
+    await _userRepo.SaveChangesAsync();
+}
+
+public async Task<UserResponseDto> GetUserByIdAsync(Guid userId)
+{
+    var user = await _userRepo.GetByIdAsync(userId);
+    if (user == null)
+        throw new ArgumentException("Пользователь не найден");
     return new UserResponseDto
     {
         Id = user.Id,

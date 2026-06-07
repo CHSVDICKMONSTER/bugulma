@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ClubBooking.Application.DTOs;
 using ClubBooking.Application.Services;
 using ClubBooking.Domain.Entities;
+using ClubBooking.Domain.Interfaces;
 
 namespace ClubBooking.API.Controllers
 {
@@ -96,5 +97,35 @@ namespace ClubBooking.API.Controllers
             return Ok(updated);
         }
 
+
+        [HttpPut("update-email")]
+[Authorize]
+public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailDto dto)
+{
+    try
+    {
+        var userId = GetCurrentUserId();
+        await _userService.UpdateEmailAsync(userId, dto.Email);
+        return Ok(new { success = true, message = "Email успешно изменён" });
+    }
+    catch (InvalidOperationException ex)
+    {
+        return BadRequest(new { error = ex.Message });
+    }
+    catch (ArgumentException ex)
+    {
+        return BadRequest(new { error = ex.Message });
+    }
+}
+[HttpGet("me")]
+[Authorize]
+public async Task<IActionResult> GetCurrentUser()
+{
+    var userId = GetCurrentUserId();
+    var user = await _userService.GetUserByIdAsync(userId);
+    if (user == null)
+        return NotFound();
+    return Ok(user);
+}
     }
 }

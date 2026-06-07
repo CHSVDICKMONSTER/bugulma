@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCClub - Административная панель</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+            transition: background 0.3s, color 0.2s;
+        }
+        body.dark {
+            background: #111827;
+            color: #e5e7eb;
+        }
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        body.dark .header {
+            background: #1f2937;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-info {
+            font-weight: 500;
+        }
+        .user-info {
+    display: none;
+}
+        .logout-btn {
+            background: #ef4444;
+            padding: 6px 16px;
+            border-radius: 30px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+        /* Основной контент */
+        .container {
+            max-width: 1400px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+        /* Карточки */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+        body.dark .card {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            border: 1px solid #d1d5db;
+            background: white;
+            font-size: 0.95rem;
+        }
+        body.dark select, body.dark input {
+            background: #374151;
+            border-color: #4b5563;
+            color: #e5e7eb;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .btn-secondary {
+            background: #6b7280;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        .btn-danger {
+            background: #ef4444;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .booking-list, .user-list, .club-list {
+            list-style: none;
+        }
+        .booking-list li, .user-list li, .club-list li {
+            background: #f9fafb;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        body.dark .booking-list li, body.dark .user-list li, body.dark .club-list li {
+            background: #374151;
+        }
+        .delete-btn, .edit-btn, .history-btn {
+            padding: 4px 12px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .delete-btn { background: #ef4444; color: white; }
+        .edit-btn { background: #f59e0b; color: black; }
+        .history-btn { background: #10b981; color: white; }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+        }
+        body.dark .modal-content {
+            background: #1f2937;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .modal-body { padding: 24px; }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .error-message { color: #ef4444; margin-top: 8px; }
+        .hidden { display: none; }
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .flex-between { flex-direction: column; align-items: stretch; }
+        }
+        /* Приветственный экран */
+.welcome-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20000;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+.welcome-overlay.active {
+    opacity: 1;
+}
+.welcome-overlay .welcome-text {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.4s ease;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.welcome-overlay.active .welcome-text {
+    transform: scale(1);
+}
+/* Модальное окно подтверждения */
+.confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 30000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.confirm-modal.active {
+    opacity: 1;
+}
+.confirm-modal .confirm-content {
+    background: white;
+    border-radius: 32px;
+    width: 90%;
+    max-width: 420px;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+}
+.confirm-modal.active .confirm-content {
+    transform: scale(1);
+}
+body.dark .confirm-modal .confirm-content {
+    background: #1f2937;
+}
+.confirm-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+.confirm-body {
+    padding: 24px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #1f2937;
+}
+body.dark .confirm-body {
+    color: #e5e7eb;
+}
+.confirm-footer {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #e5e7eb;
+}
+body.dark .confirm-footer {
+    border-top-color: #374151;
+}
+.confirm-btn {
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+.confirm-btn-cancel {
+    background: #9ca3af;
+    color: white;
+}
+.confirm-btn-cancel:hover {
+    background: #6b7280;
+}
+.confirm-btn-logout {
+    background: #ef4444;
+    color: white;
+}
+.confirm-btn-logout:hover {
+    background: #dc2626;
+}
+.overlay-logo {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 20px;
+}
+/* Вертикальная прокрутка для списков */
+.booking-list,
+.user-list,
+.club-list {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 5px; /* чтобы скролл не перекрывал содержимое */
+}
+
+/* Адаптация для небольших экранов */
+@media (max-width: 768px) {
+    .booking-list,
+    .user-list,
+    .club-list {
+        max-height: 250px;
+    }
+}
+#bookingsList, #clientsList, #clubsManagement {
+    margin-top: 12px;
+}
+/* Строка поиска */
+.search-input {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border, #e2e8f0);
+    background: var(--card-bg, white);
+    color: var(--text, #1f2937);
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.2s;
+}
+.search-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+}
+body.dark .search-input {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+body.dark .search-input:focus {
+    border-color: #60a5fa;
+}
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">PCClub Admin</div>
+    <div class="header-actions">
+        <div class="user-info" id="userInfo"></div>
+        <button id="themeToggle" class="theme-btn" style="background:transparent; border:none; font-size:1.5rem;">🌙</button>
+        <button id="logoutBtn" class="logout-btn">Выйти</button>
+    </div>
+</div>
+<div class="container" id="appContainer">
+    <!-- Содержимое будет загружено динамически -->
+</div>
+
+<script>
+    // ==================== Глобальные переменные ====================
+    let authToken = localStorage.getItem('token');
+    let currentUser = null;
+    let currentRole = null;
+
+    // Вспомогательные функции
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function setAuthToken(token) {
+        authToken = token;
+        if (token) localStorage.setItem('token', token);
+        else localStorage.removeItem('token');
+    }
+
+    async function apiRequest(endpoint, method = 'GET', body = null) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+        const response = await fetch(`/api${endpoint}`, {
+            method,
+            headers,
+            body: body ? JSON.stringify(body) : null
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({ error: 'Ошибка сервера' }));
+            throw new Error(err.error || err.message || 'Request failed');
+        }
+        if (response.status === 204) return null;
+        return response.json();
+    }
+
+    // ==================== Аутентификация ====================
+    async function login(login, password) {
+    const data = await apiRequest('/auth/login', 'POST', { login, password });
+    setAuthToken(data.token);
+    currentUser = data;
+    currentRole = data.role;
+    localStorage.setItem('adminRole', data.role);
+    document.getElementById('userInfo').innerText = `${data.nickname} (${data.role})`;
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+    showAdminOverlay(data.nickname);
+    // Задержка перед загрузкой панели, чтобы оверлей повисел 2 секунды
+    setTimeout(() => {
+        loadAdminPanel();
+    }, 2000);
+}
+
+function showAdminOverlay(nickname) {
+    const overlay = document.createElement('div');
+    overlay.className = 'welcome-overlay';
+    overlay.innerHTML = `<div class="welcome-text">${escapeHtml(nickname)}, добро пожаловать в админ-панель!</div>`;
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.classList.add('active'), 10);
+    setTimeout(() => {
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.remove(), 600);
+    }, 2000);
+}
+
+function showRedirectOverlay(message, url) {
+    const overlay = document.createElement('div');
+    overlay.className = 'welcome-overlay';
+    overlay.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+        <div class="overlay-logo">PCClub</div>
+        <div class="welcome-text">${escapeHtml(message)}</div>
+    </div>
+`;
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.classList.add('active'), 10);
+    setTimeout(() => {
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.remove();
+            window.location.href = url;
+        }, 600);
+    }, 2000);
+}
+
+    function logout() {
+    // Создаём модальное окно подтверждения
+    const modal = document.createElement('div');
+    modal.className = 'confirm-modal';
+    modal.innerHTML = `
+        <div class="confirm-content">
+            <div class="confirm-header">
+                ⚠️ Подтверждение выхода
+            </div>
+            <div class="confirm-body">
+                Вы действительно хотите выйти из аккаунта?
+            </div>
+            <div class="confirm-footer">
+                <button class="confirm-btn confirm-btn-cancel" id="confirmCancel">Отмена</button>
+                <button class="confirm-btn confirm-btn-logout" id="confirmLogout">Выйти</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Анимация появления
+    setTimeout(() => modal.classList.add('active'), 10);
+    
+    const closeModal = () => {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 300);
+    };
+    
+    modal.querySelector('#confirmCancel').onclick = closeModal;
+    modal.querySelector('#confirmLogout').onclick = () => {
+        closeModal();
+        // Выполняем выход
+        setAuthToken(null);
+        currentUser = null;
+        currentRole = null;
+        localStorage.removeItem('adminRole');
+        document.getElementById('logoutBtn').style.display = 'none';
+        showLoginForm();
+    };
+    // Закрытие по клику на фон
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+}
+
+    function showLoginForm() {
+    document.getElementById('logoutBtn').style.display = 'none';
+    const container = document.getElementById('appContainer');
+    container.innerHTML = `
+        <div class="card" style="max-width: 500px; margin: 0 auto;">
+            <h2>Вход в админ-панель</h2>
+            <div class="form-group"><label>Логин (email или ник)</label><input id="loginLogin" type="text"></div>
+            <div class="form-group"><label>Пароль</label><input id="loginPassword" type="password"></div>
+            <button id="doLogin">Войти</button>
+            <div id="loginError" class="error-message"></div>
+        </div>
+        <div class="card" style="max-width: 500px; margin: 20px auto 0; text-align: center;">
+            <button id="toMainBtn" style="background: #6c757d; color: white; padding: 10px 20px; border-radius: 30px; width: auto; display: inline-block;">🚪 Перейти в основную часть (вход/регистрация)</button>
+        </div>
+    `;
+
+    // Обработчик входа
+    document.getElementById('doLogin').onclick = async () => {
+        const loginVal = document.getElementById('loginLogin').value;
+        const pass = document.getElementById('loginPassword').value;
+        try {
+            await login(loginVal, pass);
+        } catch(e) {
+            document.getElementById('loginError').innerText = e.message;
+        }
+    };
+
+    // Обработчик перехода на клиентскую часть
+    const toMainBtn = document.getElementById('toMainBtn');
+if (toMainBtn) {
+    toMainBtn.onclick = () => {
+        window.location.href = '/';
+    };
+}
+}
+
+    // ==================== Модальные окна ====================
+    function showModal(title, bodyHtml, onSave = null) {
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'modal';
+        modalDiv.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>${title}</span>
+                    <button class="modal-close" style="background:none; border:none; font-size:28px;">&times;</button>
+                </div>
+                <div class="modal-body">${bodyHtml}</div>
+                <div class="modal-footer">
+                    <button id="modalCancel" class="btn-secondary">Отмена</button>
+                    <button id="modalSave" class="btn-primary">Сохранить</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+        const close = () => modalDiv.remove();
+        modalDiv.querySelector('.modal-close').onclick = close;
+        modalDiv.querySelector('#modalCancel').onclick = close;
+        const saveBtn = modalDiv.querySelector('#modalSave');
+        if (onSave) saveBtn.onclick = async () => { await onSave(modalDiv); close(); };
+        return modalDiv;
+    }
+
+    // ==================== Управление бронями ====================
+    async function loadBookingsByClub(clubId) {
+        const bookings = await apiRequest(`/bookings/club/${clubId}`);
+        const listDiv = document.getElementById('bookingsList');
+        if (!bookings.length) {
+            listDiv.innerHTML = '<p>Нет броней</p>';
+            return;
+        }
+        let html = '<ul class="booking-list">';
+        bookings.forEach(b => {
+            html += `<li>
+                        <span><strong>${escapeHtml(b.userNickname)}</strong> — Место ${b.seatNumber}<br>
+                        ${new Date(b.startTime).toLocaleString()} – ${new Date(b.endTime).toLocaleString()}</span>
+                        <div>
+                            <button class="edit-btn" data-id="${b.id}" data-seat="${b.seatId}" data-start="${b.startTime}" data-end="${b.endTime}">✏️</button>
+                            <button class="delete-btn" data-id="${b.id}">🗑️</button>
+                        </div>
+                     </li>`;
+        });
+        html += '</ul>';
+        listDiv.innerHTML = html;
+
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                if (confirm('Удалить бронь?')) {
+                    await apiRequest(`/bookings/${id}`, 'DELETE');
+                    const clubSelect = document.getElementById('bookingClubSelect');
+                    await loadBookingsByClub(clubSelect.value);
+                }
+            });
+        });
+
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const seatId = btn.dataset.seat;
+                const start = btn.dataset.start;
+                const end = btn.dataset.end;
+                showEditBookingModal(id, seatId, start, end, document.getElementById('bookingClubSelect').value);
+            });
+        });
+    }
+
+    async function showEditBookingModal(bookingId, seatId, currentStart, currentEnd, clubId) {
+        const startLocal = new Date(currentStart).toISOString().slice(0, 16);
+        const endLocal = new Date(currentEnd).toISOString().slice(0, 16);
+        const body = `
+            <div class="form-group"><label>Новое начало</label><input type="datetime-local" id="editStart" value="${startLocal}" step="60"></div>
+            <div class="form-group"><label>Новое окончание</label><input type="datetime-local" id="editEnd" value="${endLocal}" step="60"></div>
+            <div id="editError" class="error-message"></div>
+        `;
+        showModal('Редактирование брони', body, async (modal) => {
+            const start = modal.querySelector('#editStart').value;
+            const end = modal.querySelector('#editEnd').value;
+            if (!start || !end) throw new Error('Заполните поля');
+            const startTime = new Date(start);
+            const endTime = new Date(end);
+            if (startTime <= new Date()) throw new Error('Начало должно быть в будущем');
+            if (endTime <= startTime) throw new Error('Конец позже начала');
+            if ((endTime - startTime) > 4*60*60*1000) throw new Error('Максимум 4 часа');
+            await apiRequest(`/bookings/${bookingId}`, 'PUT', { seatId, startTime: startTime.toISOString(), endTime: endTime.toISOString() });
+            await loadBookingsByClub(clubId);
+        });
+    }
+
+    // ==================== Управление клиентами ====================
+    async function loadClients() {
+        const clients = await apiRequest('/users/clients');
+        const container = document.getElementById('clientsList');
+        if (!clients.length) { container.innerHTML = '<p>Нет клиентов</p>'; return; }
+        let html = '<ul class="user-list">';
+        clients.forEach(c => {
+            html += `<li>
+                        <span><strong>${escapeHtml(c.nickname)}</strong> (${escapeHtml(c.email)})</span>
+                        <div>
+                            <button class="history-btn" data-id="${c.id}" title="История броней">📋</button>
+                            <button class="edit-client-btn" data-id="${c.id}" data-nick="${escapeHtml(c.nickname)}" data-email="${escapeHtml(c.email)}">✏️</button>
+                            <button class="delete-btn" data-id="${c.id}">🗑️</button>
+                        </div>
+                     </li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                if (confirm('Удалить клиента?')) {
+                    await apiRequest(`/users/${id}`, 'DELETE');
+                    await loadClients();
+                }
+            });
+        });
+
+        document.querySelectorAll('.edit-client-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const nick = btn.dataset.nick;
+                const email = btn.dataset.email;
+                showEditClientModal(id, nick, email);
+            });
+        });
+
+        document.querySelectorAll('.history-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const userId = btn.dataset.id;
+                await showUserHistoryModal(userId);
+            });
+        });
+    }
+
+    async function showEditClientModal(userId, currentNick, currentEmail) {
+        const body = `
+            <div class="form-group"><label>Никнейм</label><input id="editNick" type="text" value="${escapeHtml(currentNick)}"></div>
+            <div class="form-group"><label>Email</label><input id="editEmail" type="email" value="${escapeHtml(currentEmail)}"></div>
+            <div id="editError" class="error-message"></div>
+        `;
+        showModal('Редактирование клиента', body, async (modal) => {
+            const nickname = modal.querySelector('#editNick').value.trim();
+            const email = modal.querySelector('#editEmail').value.trim();
+            if (!nickname || !email) throw new Error('Заполните поля');
+            await apiRequest(`/users/${userId}`, 'PUT', { nickname, email });
+            await loadClients();
+        });
+    }
+
+    async function showUserHistoryModal(userId) {
+        const bookings = await apiRequest(`/bookings/user/${userId}`);
+        let html = '<div style="max-height: 400px; overflow-y: auto;">';
+        if (!bookings.length) html += '<p>Нет броней</p>';
+        else {
+            bookings.forEach(b => {
+                const start = new Date(b.startTime);
+                const end = new Date(b.endTime);
+                let status = end < new Date() ? 'Завершена' : (start <= new Date() ? 'Активна' : 'Будущая');
+                html += `<div style="border-bottom:1px solid #ccc; padding:8px 0;">
+                            <strong>${escapeHtml(b.clubAddress)}</strong>, Место ${b.seatNumber}<br>
+                            ${start.toLocaleString()} – ${end.toLocaleString()}<br>
+                            Статус: ${status}
+                        </div>`;
+            });
+        }
+        html += '</div>';
+        showModal('История броней', html, null);
+    }
+
+    // ==================== Управление клубами (только SuperAdmin) ====================
+    async function loadClubsForAdmin() {
+        const clubs = await apiRequest('/clubs');
+        const container = document.getElementById('clubsList');
+        let html = '<ul class="club-list">';
+        clubs.forEach(c => {
+            html += `<li>
+                        <span>${escapeHtml(c.address)}</span>
+                        <div>
+                            <button class="edit-club-btn" data-id="${c.id}" data-address="${escapeHtml(c.address)}">✏️</button>
+                            <button class="delete-club-btn" data-id="${c.id}">🗑️</button>
+                        </div>
+                     </li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+
+        document.querySelectorAll('.delete-club-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (confirm('Удалить клуб? Все места и брони будут удалены.')) {
+                    await apiRequest(`/clubs/${btn.dataset.id}`, 'DELETE');
+                    await loadClubsForAdmin();
+                }
+            });
+        });
+
+        document.querySelectorAll('.edit-club-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const clubId = btn.dataset.id;
+                const currentAddress = btn.dataset.address;
+                const seats = await apiRequest(`/seats/club/${clubId}`);
+                const currentSeats = seats.length;
+                showEditClubModal(clubId, currentAddress, currentSeats);
+            });
+        });
+    }
+
+    async function showEditClubModal(clubId, currentAddress, currentSeats) {
+        const options = [];
+        for (let i = 2; i <= 20; i++) {
+            options.push(`<option value="${i}" ${currentSeats === i ? 'selected' : ''}>${i} мест</option>`);
+        }
+        const body = `
+            <div class="form-group"><label>Адрес</label><input id="editAddress" type="text" value="${escapeHtml(currentAddress)}"></div>
+            <div class="form-group"><label>Количество мест (2-20)</label><select id="editSeats">${options.join('')}</select></div>
+            <div id="editError" class="error-message"></div>
+        `;
+        showModal('Редактирование клуба', body, async (modal) => {
+            const address = modal.querySelector('#editAddress').value.trim();
+            const seats = parseInt(modal.querySelector('#editSeats').value, 10);
+            if (!address) throw new Error('Адрес обязателен');
+            await apiRequest(`/clubs/${clubId}`, 'PUT', { address, numberOfSeats: seats });
+            await loadClubsForAdmin();
+        });
+    }
+
+    async function createClub() {
+        const address = document.getElementById('newClubAddress').value.trim();
+        const seats = parseInt(document.getElementById('newClubSeats').value, 10);
+        if (!address) { alert('Введите адрес'); return; }
+        await apiRequest('/clubs', 'POST', { address, numberOfSeats: seats });
+        alert('Клуб создан');
+        document.getElementById('newClubAddress').value = '';
+        await loadClubsForAdmin();
+    }
+
+    // ==================== Загрузка панели в зависимости от роли ====================
+    async function loadAdminPanel() {
+    const container = document.getElementById('appContainer');
+    const clubs = await apiRequest('/clubs');
+    const isSuper = currentRole === 'SuperAdmin';
+
+    let html = `
+        <div class="card">
+            <h2>Управление бронями</h2>
+            <div class="form-group"><label>Клуб</label><select id="bookingClubSelect">${clubs.map(c => `<option value="${c.id}">${c.address}</option>`).join('')}</select></div>
+            <input type="text" class="search-input" data-target="bookings" placeholder="🔍 Поиск по клиенту, месту, времени...">
+            <button id="loadBookingsBtn">Показать брони</button>
+            <div id="bookingsList"></div>
+        </div>
+        <div class="card">
+            <h2>Клиенты</h2>
+            <input type="text" class="search-input" data-target="clients" placeholder="🔍 Поиск по никнейму или email...">
+            <button id="refreshClientsBtn">Загрузить клиентов</button>
+            <div id="clientsList"></div>
+        </div>
+    `;
+    if (isSuper) {
+        html += `
+            <div class="card">
+                <h2>Управление клубами</h2>
+                <input type="text" class="search-input" data-target="clubs" placeholder="🔍 Поиск по адресу...">
+                <div id="clubsList"></div>
+                <h3>Создать новый клуб</h3>
+                <div class="form-group"><label>Адрес</label><input id="newClubAddress" type="text" placeholder="ул. Центральная, 10"></div>
+                <div class="form-group"><label>Количество мест (2-20)</label>
+                    <select id="newClubSeats">
+                        ${Array.from({length: 19}, (_, i) => i + 2).map(n => `<option value="${n}">${n} мест</option>`).join('')}
+                    </select>
+                </div>
+                <button id="createClubBtn">Создать клуб</button>
+            </div>
+        `;
+    }
+    container.innerHTML = html;
+
+        document.getElementById('loadBookingsBtn').onclick = async () => {
+            const clubId = document.getElementById('bookingClubSelect').value;
+            await loadBookingsByClub(clubId);
+        };
+        document.getElementById('refreshClientsBtn').onclick = async () => {
+            await loadClients();
+        };
+        if (isSuper) {
+            await loadClubsForAdmin();
+            document.getElementById('createClubBtn').onclick = createClub;
+        }
+        // Загружаем начальные данные
+        if (clubs.length) await loadBookingsByClub(clubs[0].id);
+        await loadClients();
+        if (typeof initSearchFilters === 'function') initSearchFilters();
+    }
+
+    // ==================== Тёмная тема и инициализация ====================
+    function initTheme() {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') document.body.classList.add('dark');
+        const btn = document.getElementById('themeToggle');
+        btn.textContent = document.body.classList.contains('dark') ? 'Светлая тема' : 'Темная тема';
+        btn.onclick = () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            btn.textContent = isDark ? 'Светлая тема' : 'Темная тема';
+        };
+    }
+
+    async function start() {
+        initTheme();
+        const token = localStorage.getItem('token');
+        const savedRole = localStorage.getItem('adminRole');
+        if (token && savedRole) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                currentUser = { nickname: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'], role: savedRole };
+                currentRole = savedRole;
+                setAuthToken(token);
+                document.getElementById('userInfo').innerText = `${currentUser.nickname} (${currentRole})`;
+                await loadAdminPanel();
+                initSearchFilters();
+            } catch(e) {
+                showLoginForm();
+            }
+        } else {
+            showLoginForm();
+        }
+        document.getElementById('logoutBtn').onclick = () => logout();
+    }
+function initSearchFilters() {
+    // Фильтр для броней
+    const bookingsSearch = document.querySelector('.search-input[data-target="bookings"]');
+    if (bookingsSearch) {
+        bookingsSearch.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const list = document.querySelector('#bookingsList .booking-list');
+            if (list) {
+                const items = list.querySelectorAll('li');
+                items.forEach(li => {
+                    const text = li.innerText.toLowerCase();
+                    li.style.display = text.includes(query) ? '' : 'none';
+                });
+            }
+        });
+    }
+
+    // Фильтр для клиентов
+    const clientsSearch = document.querySelector('.search-input[data-target="clients"]');
+    if (clientsSearch) {
+        clientsSearch.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const list = document.querySelector('#clientsList .user-list');
+            if (list) {
+                const items = list.querySelectorAll('li');
+                items.forEach(li => {
+                    const text = li.innerText.toLowerCase();
+                    li.style.display = text.includes(query) ? '' : 'none';
+                });
+            }
+        });
+    }
+
+    // Фильтр для клубов
+    const clubsSearch = document.querySelector('.search-input[data-target="clubs"]');
+    if (clubsSearch) {
+        clubsSearch.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const list = document.querySelector('#clubsList .club-list');
+            if (list) {
+                const items = list.querySelectorAll('li');
+                items.forEach(li => {
+                    const text = li.innerText.toLowerCase();
+                    li.style.display = text.includes(query) ? '' : 'none';
+                });
+            }
+        });
+    }
+}
+    start();
+</script>
+</body>
+</html>
